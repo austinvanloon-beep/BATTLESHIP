@@ -24,6 +24,14 @@ RSpec.describe Ship do
         end
     end
 
+    describe '#the ship is able to track health, take hits and sink' do
+        it 'is sunk?' do
+            #binding.pry
+            cruiser = Ship.new("Cruiser", 3)
+            expect(cruiser.sunk?).to eq(false)
+        end
+    end
+
 
 
 
