@@ -30,35 +30,30 @@ RSpec.describe Ship do
             cruiser = Ship.new("Cruiser", 3)
             expect(cruiser.sunk?).to eq(false)
         end
+
+        it 'did it take a hit' do
+            cruiser = Ship.new("Cruiser", 3)
+            cruiser.hit
+            expect(cruiser.health).to eq(2)
+        end
+
+        it 'did it take 2 hits' do
+            cruiser = Ship.new("Cruiser", 3)
+            cruiser.hit
+            cruiser.hit
+            expect(cruiser.health).to eq(1)
+            expect(cruiser.sunk?).to eq(false)
+        end
+
+        #-possibly refactor health between hits-
+
+        it 'did it take 3 hits' do
+            cruiser = Ship.new("Cruiser", 3)
+            cruiser.hit
+            cruiser.hit
+            cruiser.hit
+            expect(cruiser.health).to eq(0)
+            expect(cruiser.sunk?).to eq(true)
+        end
     end
-
-
-
-
-
-
-
-
-
 end 
-
-# pry(main)> cruiser.sunk?
-# #=> false
-
-# pry(main)> cruiser.hit
-
-# pry(main)> cruiser.health
-# #=> 2
-
-# pry(main)> cruiser.hit
-
-# pry(main)> cruiser.health
-# #=> 1
-
-# pry(main)> cruiser.sunk?
-# #=> false
-
-# pry(main)> cruiser.hit
-
-# pry(main)> cruiser.sunk?
-# #=> true
