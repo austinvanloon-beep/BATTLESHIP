@@ -1,7 +1,8 @@
 require 'spec_helper'
-require './lib/cell.rb'
+require './lib/cell'
 
 RSpec.describe Board do
+    #binding.pry
     describe '#___' do
         it 'exists' do
             board = Board.new
