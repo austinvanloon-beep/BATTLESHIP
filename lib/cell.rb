@@ -19,11 +19,12 @@ class Cell
   def place_ship(ship)
     @ship = ship
   end
-
+  
   def fired_upon?
 
   end
 
+  #is this like when the user/player chooses a cell to "attack?"
   def fired_upon
     
   end
