@@ -35,6 +35,14 @@ class Cell
   def render
     if fired_upon? == false
       return "."
+    elsif fired_upon? == true && empty? == true
+      return "M"
+    elsif fired_upon? == true && empty? == false
+      return "H"
+    elsif fired_upon? == true && empty? == false && @ship.sunk? == true
+      return "X"
+    # elsif empty? == true
+    #   return "S"
     else
     end
   end

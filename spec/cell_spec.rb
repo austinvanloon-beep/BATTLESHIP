@@ -69,6 +69,7 @@ RSpec.describe Cell do
 
     before(:each) do
       @cell_1 = Cell.new("B4")
+      @cell_2 = Cell.new("C3")
     end
 
     it 'returns ”.” if the cell has not been fired upon' do
@@ -76,7 +77,21 @@ RSpec.describe Cell do
     end
 
     it 'returns "M" if the cell has been fired upon and does not contain a ship' do
-      # expect()
+      @cell_1.fire_upon("B4")
+      
+      expect(@cell_1.render).to eq("M")
+    end
+
+    it 'returns "H" if the cell has been fired upon and contains a ship' do
+      cruiser = Ship.new("Cruiser", 3)
+      @cell_2.place_ship(cruiser)
+
+      expect(@cell_2.render).to eq(".")
+
+      # Indicate that we want to show return "S" to show a ship with the optional argument
+      # expect(@cell_2.render(true)).to ("S")
+
+      
     end
   end
 
@@ -84,28 +99,9 @@ end
 
 
 
-# pry(main)> cell_1.render
-# # => "."
 
-# pry(main)> cell_1.fire_upon
 
-# pry(main)> cell_1.render
-# # => "M"
 
-# pry(main)> cell_2 = Cell.new("C3")
-# # => #<Cell:0x00007f84f0b29d10...>
-
-# pry(main)> cruiser = Ship.new("Cruiser", 3)
-# # => #<Ship:0x00007f84f0ad4fb8...>
-
-# pry(main)> cell_2.place_ship(cruiser)
-
-# pry(main)> cell_2.render
-# # => "."
-
-# # Indicate that we want to show a ship with the optional argument
-# pry(main)> cell_2.render(true)
-# # => "S"
 
 # pry(main)> cell_2.fire_upon
 
