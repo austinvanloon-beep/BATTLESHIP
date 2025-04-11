@@ -33,7 +33,6 @@ RSpec.describe Cell do
       expect(@cell.empty?).to eq(true)
     end
 
-    # failing because it doesn't have the ship class yet
     it 'can place a ship into the cell' do
       @cell.place_ship(@cruiser)
 
@@ -57,7 +56,8 @@ RSpec.describe Cell do
     end
 
     it 'has been fired upon and damages any contained ships' do
-      @cell.fire_upon
+      @cell.place_ship(@cruiser)
+      @cell.fired_upon("B4")
 
       expect(@cell.ship.health).to eq(2)
       expect(@cell.fired_upon?).to eq(false)

@@ -9,11 +9,7 @@ class Cell
   end
 
   def empty?
-    if @ship != nil
-      return true
-    else 
-      return false
-    end
+    @ship == nil
   end
 
   def place_ship(ship)
@@ -21,12 +17,18 @@ class Cell
   end
   
   def fired_upon?
-
+    @fired_upon
   end
 
   #is this like when the user/player chooses a cell to "attack?"
-  def fired_upon
-    
+  def fired_upon(fire_coordinate)
+    if fire_coordinate == @coordinate
+      if empty? == true
+        @fired_upon = true
+      else
+        @ship.hit               
+      end
+    end
   end
 
 
