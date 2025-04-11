@@ -24,18 +24,23 @@ RSpec.describe Ship do
     end
 
     describe '#the ship is able to track health, take hits and sink' do
+
         it 'returns false if the ship is not sunk' do
+
             cruiser = Ship.new("Cruiser", 3)
             expect(cruiser.sunk?).to eq(false)
         end
 
+
         it 'reduces health by 1 when hit' do
+
             cruiser = Ship.new("Cruiser", 3)
             cruiser.hit
             expect(cruiser.health).to eq(2)
         end
 
         it 'does not sink if it only takes 2 hits' do
+
             cruiser = Ship.new("Cruiser", 3)
             cruiser.hit
             cruiser.hit
@@ -46,6 +51,7 @@ RSpec.describe Ship do
         #-possibly refactor health between hits based on interaction pattern-
 
         it 'does sink if it takes enough hits to reduce health to 0 (3 hits for Cruiser)' do
+
             cruiser = Ship.new("Cruiser", 3)
             cruiser.hit
             cruiser.hit
