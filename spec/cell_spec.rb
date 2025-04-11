@@ -18,10 +18,11 @@ RSpec.describe Cell do
 
   end
 
-  describe 'a cell can contain a Ship or nothing' do
+  describe 'can contain a Ship or nothing' do
 
     before(:each) do
       @cell = Cell.new("B4")
+      @cruiser = Ship.new("Cruiser", 3)
     end
 
     it 'contains nothing by default' do
@@ -34,17 +35,15 @@ RSpec.describe Cell do
 
     # failing because it doesn't have the ship class yet
     it 'can place a ship into the cell' do
-      cruiser = Ship.new("Cruiser", 3)
+      @cell.place_ship(@cruiser)
 
-      @cell.place_ship(cruiser)
-
-      expect(@cell.ship).to eq(cruiser)
+      expect(@cell.ship).to eq(@cruiser)
       expect(@cell.empty?).to eq(false)
     end
 
   end
 
-  describe 'a cell knows when it has been fired upon' do
+  describe 'knows when it has been fired upon' do
 
     before(:each) do
       @cell = Cell.new("B4")
