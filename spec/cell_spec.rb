@@ -90,9 +90,21 @@ RSpec.describe Cell do
 
       # Indicate that we want to show return "S" to show a ship with the optional argument
       # expect(@cell_2.render(true)).to ("S")
-
-      
     end
+
+    it 'returns "X" if the cell has been fired upon and its ship has sunk' do
+      cruiser = Ship.new("Cruiser", 3)
+      @cell_2.place_ship(cruiser)
+      
+      @cruiser.hit
+      @cruiser.hit
+      @cruiser.hit
+
+      @cruiser.sunk?
+      
+      expect(@cell2.render).to eq("X")
+    end
+
   end
 
 end
