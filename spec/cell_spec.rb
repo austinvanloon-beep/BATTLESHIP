@@ -42,8 +42,48 @@ RSpec.describe Cell do
       expect(@cell.empty?).to eq(false)
     end
 
+  end
 
+  describe 'a cell knows when it has been fired upon' do
+
+    before(:each) do
+      @cell = Cell.new("B4")
+      @cruiser = Ship.new("Cruiser", 3)
+    end
+
+    it 'has not been fired upon yet' do
+      @cell.place_ship(@cruiser)
+
+      expect(@cell.fired_upon?).to eq(false)
+    end
+
+    it 'has been fired upon and damages any contained ships' do
+      @cell.fire_upon
+
+      expect(@cell.ship.health).to eq(2)
+      expect(@cell.fired_upon?).to eq(false)
+    end
+  
   end
 
 
 end
+
+# pry(main)> cell = Cell.new("B4")
+# # => #<Cell:0x00007f84f0ad4720...>
+
+# pry(main)> cruiser = Ship.new("Cruiser", 3)
+# # => #<Ship:0x00007f84f0891238...>
+
+# pry(main)> cell.place_ship(cruiser)
+
+# pry(main)> cell.fired_upon?
+# # => false
+
+# pry(main)> cell.fire_upon
+
+# pry(main)> cell.ship.health
+# # => 2
+
+# pry(main)> cell.fired_upon?
+# # => true

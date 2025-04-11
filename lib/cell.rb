@@ -19,5 +19,12 @@ class Cell
     :ship => ship
   end
 
+  def fired_upon
+    
+  end
+
+  def fired_upon?
+    
+  end
 
 end
