@@ -64,38 +64,44 @@ RSpec.describe Board do
     end
 
     describe 'is rendering board' do
-        
+       
+        before(:each) do
+            @board = Board.new
+            @cruiser = Ship.new("Cruiser", 3)
+        end
+
+        it 'in a  4x4 grid formation with cells containing ships hidden by default' do
+            @board.place_ship(@cruiser, ["A1", "A2", "A3"]) 
+
+            expect(@board.render).to eq("  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . . \n")
+            # # => "  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . . \n"
+
+            expected_render =
+            "  1 2 3 4 \n" +
+            "A . . . . \n" +
+            "B . . . . \n" +
+            "C . . . . \n" +
+            "D . . . . \n"
+
+            expect(@board.render).to eq(expected_render)
+        end
+
+        it 'and displays "S" for the cells which contain a ship when the optional argument for show_ship is passed' do
+            @board.place_ship(@cruiser, ["A1", "A2", "A3"]) 
+
+            expect(@board.render(true)).to eq("  1 2 3 4 \nA S S S . \nB . . . . \nC . . . . \nD . . . . \n")
+            # # => "  1 2 3 4 \nA S S S . \nB . . . . \nC . . . . \nD . . . . \n"
+
+            expected_render =
+            "  1 2 3 4 \n" +
+            "A S S S . \n" +
+            "B . . . . \n" +
+            "C . . . . \n" +
+            "D . . . . \n"
+
+            expect(@board.render(true)).to eq(expected_render)
+        end
     end
+
+
 end
-
-# pry(main)> require './lib/board'
-# # => true
-
-# pry(main)> require './lib/ship'
-# # => true
-
-# pry(main)> board = Board.new
-# # => #<Board:0x00007fcb0f056860...>
-
-# pry(main)> cruiser = Ship.new("Cruiser", 3)    
-# # => #<Ship:0x00007fcb0f0573f0...>
-
-# pry(main)> board.place(cruiser, ["A1", "A2", "A3"])    
-
-# pry(main)> board.render
-# # => "  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . . \n"
-
-# pry(main)> board.render(true)
-# # => "  1 2 3 4 \nA S S S . \nB . . . . \nC . . . . \nD . . . . \n"
-
-# "  1 2 3 4 \n" +
-# "A . . . . \n" +
-# "B . . . . \n" +
-# "C . . . . \n" +
-# "D . . . . \n"
-
-# "  1 2 3 4 \n" +
-# "A S S S . \n" +
-# "B . . . . \n" +
-# "C . . . . \n" +
-# "D . . . . \n"
