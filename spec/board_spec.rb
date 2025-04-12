@@ -18,4 +18,24 @@ RSpec.describe Board do
             expect(board.cells["A1"]).to be_a(Cell)
         end
     end
+
+    describe 'is validating coordinates' do
+
+    end
+
+    describe 'is validating placements' do
+        
+    end
+
+    describe 'is placing ships' do
+        
+
+        it 'is not overlapping ships' do
+
+        end
+    end
+
+    describe 'is rendering board' do
+        
+    end
 end
