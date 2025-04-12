@@ -21,10 +21,19 @@ RSpec.describe Board do
 
     describe 'is validating coordinates' do
 
+        #board.valid_coordinate?("A1")
+        #board.valid_coordinate?("D4")
+        #board.valid_coordinate?("A5")
+        #board.valid_coordinate?("E1")
+        #board.valid_coordinate?("A22")
+
     end
 
     describe 'is validating placements' do
         
+        #board = Board.new
+        #cruiser = Ship.new("Cruiser", 3)
+        #submarine = Ship.new("Submarine", 2)
     end
 
     describe 'is placing ships' do
