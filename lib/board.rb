@@ -1,7 +1,7 @@
-
-
 class Board
+
     attr_reader :cells
+
     def initialize
         @cells = {
             "A1" => Cell.new("A1"),
@@ -22,4 +22,12 @@ class Board
             "D4" => Cell.new("D4")
         }
     end
+
+    def place_ship(ship, coordinates)
+        coordinates.each do |coordinate|
+            @cells[coordinate].place_ship(ship)
+        end
+    end
+
+
 end

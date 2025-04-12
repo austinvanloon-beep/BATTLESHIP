@@ -38,9 +38,28 @@ RSpec.describe Board do
 
     describe 'is placing ships' do
         
+        before(:each) do
+            @board = Board.new
+            @cruiser = Ship.new("Cruiser", 3)
+        end
 
+        it 'places the same ship in all provided cells' do
+            @board.place_ship(@cruiser, ["A1", "A2", "A3"])
+
+            cell_1 = @board.cells["A1"]
+            cell_2 = @board.cells["A2"]
+            cell_3 = @board.cells["A3"]
+
+            expect(cell_1.ship).to eq(@cruiser)
+            expect(cell_2.ship).to eq(@cruiser)
+            expect(cell_3.ship).to eq(@cruiser)
+
+            expect(cell_3.ship == cell_2.ship).to eq(true)
+        end
+    # can't test this until Austin finishes the validation logic
         it 'is not overlapping ships' do
 
+        
         end
     end
 
@@ -48,3 +67,35 @@ RSpec.describe Board do
         
     end
 end
+
+# pry(main)> require './lib/board'
+# # => true
+
+# pry(main)> require './lib/ship'
+# # => true
+
+# pry(main)> board = Board.new
+# # => #<Board:0x00007fcb0f056860...>
+
+# pry(main)> cruiser = Ship.new("Cruiser", 3)    
+# # => #<Ship:0x00007fcb0f0573f0...>
+
+# pry(main)> board.place(cruiser, ["A1", "A2", "A3"])    
+
+# pry(main)> board.render
+# # => "  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . . \n"
+
+# pry(main)> board.render(true)
+# # => "  1 2 3 4 \nA S S S . \nB . . . . \nC . . . . \nD . . . . \n"
+
+# "  1 2 3 4 \n" +
+# "A . . . . \n" +
+# "B . . . . \n" +
+# "C . . . . \n" +
+# "D . . . . \n"
+
+# "  1 2 3 4 \n" +
+# "A S S S . \n" +
+# "B . . . . \n" +
+# "C . . . . \n" +
+# "D . . . . \n"
