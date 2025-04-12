@@ -105,3 +105,19 @@ RSpec.describe Board do
 
 
 end
+
+# As you move forward, you will need to add functionality to your game so that you can fire on Cells and damage their Ships. 
+# When you do this, you should also add new tests for your render method that it can render with Hits, Misses, and Sunken Ships. 
+# A Board in the middle of a game might be rendered as something like this:
+
+#     "  1 2 3 4 \n" +
+#     "A H . . . \n" +
+#     "B . . . M \n" +
+#     "C X . . . \n" +
+#     "D X . . . \n"
+    
+#     "  1 2 3 4 \n" +
+#     "A H S S . \n" +
+#     "B . . . M \n" +
+#     "C X . . . \n" +
+#     "D X . . . \n"
