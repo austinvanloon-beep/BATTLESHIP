@@ -57,32 +57,70 @@ RSpec.describe Cell do
 
     it 'has been fired upon and damages any contained ships' do
       @cell.place_ship(@cruiser)
-      @cell.fired_upon("B4")
+      @cell.fire_upon("B4")
 
       expect(@cell.ship.health).to eq(2)
-      expect(@cell.fired_upon?).to eq(false)
+      expect(@cell.fired_upon?).to eq(true)
     end
   
   end
 
+  describe '#Render' do
 
+    before(:each) do
+      @cell_1 = Cell.new("B4")
+      @cell_2 = Cell.new("C3")
+      @cruiser = Ship.new("Cruiser", 3)
+    end
+
+    it 'returns ”.” if the cell has not been fired upon and does not contain a ship' do
+      expect(@cell_1.render).to eq(".")
+    end
+
+    it 'returns "." if the cell has not been fired upon and contains a ship and the show_ship argument is false' do
+      @cell_2.place_ship(@cruiser)
+      
+      expect(@cell_2.render).to eq(".")
+
+    end
+    it 'returns "S" if the cell has not been fired upon and contains a ship and the show_ship argument is true' do
+      @cell_2.place_ship(@cruiser)
+      
+      expect(@cell_2.render(true)).to eq("S")
+    end
+
+    it 'returns "M" if the cell has been fired upon and does not contain a ship' do
+      @cell_1.fire_upon("B4")
+      
+      expect(@cell_1.render).to eq("M")
+    end
+
+    it 'returns "H" if the cell has been fired upon and contains a ship' do
+      @cell_2.place_ship(@cruiser)
+      @cell_2.fire_upon("C3")
+
+      expect(@cell_2.render).to eq("H")
+
+      # did not reduce health to 0, so does not sink
+      expect(@cruiser.sunk?).to eq(false)
+    end
+
+    it 'returns "X" if the cell has been fired upon and its ship has sunk' do
+      @cell_2.place_ship(@cruiser)
+      @cell_2.fire_upon("C3")
+      
+      # refactor note -- seeing all three hits like this made me think there is probably a loop we could use
+      # I think i used 'x.times { object.method }' in the war_or_peace project to create 13 cards for each suit
+      # so maybe that could look like '3.times {@cruiser.hit}'
+      @cruiser.hit
+      @cruiser.hit
+
+      @cruiser.sunk?
+      
+      expect(@cell_2.render).to eq("X")
+    end
+
+  end
+
+  
 end
-
-# pry(main)> cell = Cell.new("B4")
-# # => #<Cell:0x00007f84f0ad4720...>
-
-# pry(main)> cruiser = Ship.new("Cruiser", 3)
-# # => #<Ship:0x00007f84f0891238...>
-
-# pry(main)> cell.place_ship(cruiser)
-
-# pry(main)> cell.fired_upon?
-# # => false
-
-# pry(main)> cell.fire_upon
-
-# pry(main)> cell.ship.health
-# # => 2
-
-# pry(main)> cell.fired_upon?
-# # => true
