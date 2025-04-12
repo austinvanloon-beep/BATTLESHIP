@@ -26,8 +26,9 @@ class Cell
     if fire_coordinate == @coordinate
       if empty? == true
         @fired_upon = true
-      else
-        @ship.hit               
+      elsif empty? == false
+        @ship.hit
+        @fired_upon = true
       end
     end
   end

@@ -60,7 +60,7 @@ RSpec.describe Cell do
       @cell.fire_upon("B4")
 
       expect(@cell.ship.health).to eq(2)
-      expect(@cell.fired_upon?).to eq(false)
+      expect(@cell.fired_upon?).to eq(true)
     end
   
   end
@@ -100,6 +100,9 @@ RSpec.describe Cell do
       @cell_2.fire_upon("C3")
 
       expect(@cell_2.render).to eq("H")
+
+      # did not reduce health to 0, so does not sink
+      expect(@cruiser.sunk?).to eq(false)
     end
 
     it 'returns "X" if the cell has been fired upon and its ship has sunk' do
@@ -111,11 +114,10 @@ RSpec.describe Cell do
       # so maybe that could look like '3.times {@cruiser.hit}'
       @cruiser.hit
       @cruiser.hit
-      @cruiser.hit
 
       @cruiser.sunk?
       
-      expect(@cell2.render).to eq("X")
+      expect(@cell_2.render).to eq("X")
     end
 
   end
