@@ -122,28 +122,5 @@ RSpec.describe Cell do
 
   end
 
+  
 end
-
-
-
-
-
-
-
-# pry(main)> cell_2.fire_upon
-
-# pry(main)> cell_2.render
-# # => "H"
-
-# pry(main)> cruiser.sunk?
-# # => false
-
-# pry(main)> cruiser.hit
-
-# pry(main)> cruiser.hit
-
-# pry(main)> cruiser.sunk?
-# # => true
-
-# pry(main)> cell_2.render
-# # => "X"
