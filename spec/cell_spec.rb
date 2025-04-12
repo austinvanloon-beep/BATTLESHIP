@@ -70,10 +70,23 @@ RSpec.describe Cell do
     before(:each) do
       @cell_1 = Cell.new("B4")
       @cell_2 = Cell.new("C3")
+      @cruiser = Ship.new("Cruiser", 3)
     end
 
-    it 'returns ”.” if the cell has not been fired upon' do
+    it 'returns ”.” if the cell has not been fired upon and does not contain a ship' do
       expect(@cell_1.render).to eq(".")
+    end
+
+    it 'returns "." if the cell has not been fired upon and contains a ship and the show_ship argument is false' do
+      @cell_2.place_ship(@cruiser)
+      
+      expect(@cell_2.render).to eq(".")
+
+    end
+    it 'returns "S" if the cell has not been fired upon and contains a ship and the show_ship argument is true' do
+      @cell_2.place_ship(@cruiser)
+      
+      expect(@cell_2.render(true)).to eq("S")
     end
 
     it 'returns "M" if the cell has been fired upon and does not contain a ship' do
@@ -83,19 +96,19 @@ RSpec.describe Cell do
     end
 
     it 'returns "H" if the cell has been fired upon and contains a ship' do
-      cruiser = Ship.new("Cruiser", 3)
-      @cell_2.place_ship(cruiser)
+      @cell_2.place_ship(@cruiser)
+      @cell_2.fire_upon("C3")
 
-      expect(@cell_2.render).to eq(".")
-
-      # Indicate that we want to show return "S" to show a ship with the optional argument
-      # expect(@cell_2.render(true)).to ("S")
+      expect(@cell_2.render).to eq("H")
     end
 
     it 'returns "X" if the cell has been fired upon and its ship has sunk' do
-      cruiser = Ship.new("Cruiser", 3)
-      @cell_2.place_ship(cruiser)
+      @cell_2.place_ship(@cruiser)
+      @cell_2.fire_upon("C3")
       
+      # refactor note -- seeing all three hits like this made me think there is probably a loop we could use
+      # I think i used 'x.times { object.method }' in the war_or_peace project to create 13 cards for each suit
+      # so maybe that could look like '3.times {@cruiser.hit}'
       @cruiser.hit
       @cruiser.hit
       @cruiser.hit
