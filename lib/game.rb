@@ -2,11 +2,11 @@ class Game
 
   # using placeholders until Austin confirms how he's initializing players
   # and differentiating between human and computer
-  attr_reader :player, :opponent
+  attr_reader :player, :computer
 
   def initialize
    @player = Player.new
-   @opponent = Player.new(is_computer? == true)
+   @computer = Player.new("computer")
   end
 
   def welcome_message
@@ -41,13 +41,13 @@ class Game
     def setup_game
       ships = [Ship.new("Cruiser", 3), Ship.new("Submarine", 2)]
       @player.place_ships(ships)
-      @opponent.place_ships(ships)
+      @computer.place_ships(ships)
     end
   end
 
   def display_boards
     puts "=============COMPUTER BOARD============="
-    puts @opponent.board.render
+    puts @computer.board.render
     puts "==============PLAYER BOARD=============="
     puts @player.board.render(true)
   end
@@ -59,7 +59,7 @@ class Game
   def end_game
     if @player.all_ships_sunk? == true
       puts "You won!"
-    elsif @opponent.all_ships_sunk? == true
+    elsif @computer.all_ships_sunk? == true
       puts "I won!"
     end
   end
