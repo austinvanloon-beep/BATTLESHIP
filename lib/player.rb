@@ -7,15 +7,13 @@ class Player
         @is_computer = false
     end
 
+    # REFACTOR create_ships so its not hardcoded for cruiser and sub
+
     def create_ships
         cruiser = Ship.new("Cruiser", 3)
         submarine = Ship.new("Submarine", 2)
         @ships << cruiser
         @ships << submarine
-    end
-
-    def place_ships
-
     end
 
     def take_turn(opponents_board)
