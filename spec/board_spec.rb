@@ -50,6 +50,8 @@ RSpec.describe Board do
           
             expect(board.valid_placement?(cruiser, ["A1", "A2", "A4"])).to eq(false)
             expect(board.valid_placement?(submarine, ["A1", "C1"])).to eq(false)
+            # future refactor note, isn't ["A3", "A2", "A1"] the same as ["A1", "A2", "A3"] just reversed, in terms of the cells that contain the ship?
+            # do we need to account for this in our error handling logic using something like .sort (https://ruby-doc.org/core-2.5.3/Enumerable.html#method-i-sort)?
             expect(board.valid_placement?(cruiser, ["A3", "A2", "A1"])).to eq(false)
             expect(board.valid_placement?(submarine, ["C1", "B1"])).to eq(false)
         end
