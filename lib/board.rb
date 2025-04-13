@@ -65,4 +65,4 @@ class Board
 
     end
         true
-    end
+end
