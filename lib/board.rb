@@ -47,23 +47,56 @@ class Board
         @cells.keys.include?(coordinate)
     end
 
+    # def valid_placement?(ship, coordinates)
+    #     return false unless coordinates.length == ship.length
+    #     letters = coordinates.map { |coordinate| coordinate[0] }
+    #     numbers = coordinates.map { |coordinate| coordinate[1..-1].to_i }
+      
+    #     if letters.uniq.length == 1
+    #       return false unless consecutive?(numbers)
+    #     elsif numbers.uniq.length == 1 #may need refactor
+    #       return false unless consecutive?(letters.map { |letter| letter.ord }) #may need refactor
+    #     else
+    #       return false 
+    #     end
+      
+    #     true
+    # end
+
+    # trying the new #.each_cons(n) + #.all (basically #.each for arrays) to use the logic Austin created to validate placement
+    # by means of checking that each resulting array pair of numbers with .each_cons(2) would return are b == a + 1
+    # and if that returns true, then it's valid, and we can do the same thing for letters
     def valid_placement?(ship, coordinates)
+
         return false unless coordinates.length == ship.length
         letters = coordinates.map { |coordinate| coordinate[0] }
+        # => letters = ["A", "B", "C", "D"]
         numbers = coordinates.map { |coordinate| coordinate[1..-1].to_i }
-      
-        if letters.uniq.length == 1
-          return false unless consecutive?(numbers)
-        elsif numbers.uniq.length == 1 #may need refactor
-          return false unless consecutive?(letters.map { |letter| letter.ord }) #may need refactor
-        else
-          return false 
-        end
-      
-        true
-    end
+        # => numbers = [1, 2, 3, 4]
 
-    def consecutive?
+        if letters.uniq.length == 1
+            return false unless numbers.each_cons(2).all? { |a, b| b == a + 1 }
+
+            # numbers.each_cons(2) { |a, b| b == a + 1 }
+            # 
+            # [1, 2] # comparing 1 against 2, 2 == 1 + 1
+            # [2, 3] # comparing 2 against 3, 3 == 2 + 1
+            # [3, 4] # comparing 3 against 4, 4 == 3 + 1
+
+        elsif numbers.uniq.length == 1
+            letter_numerical_values = letters.map { |letter| letter.ord }
+            #=> letter_numerical_values = [65, 66, 67, 68]
+
+            return false unless letter_numerical_values.each_cons(2).all? { |a, b| b == a + 1 }
+            # letters.each_cons(2) { |a, b| b == a + 1 }
+            # 
+            # [65, 66] # 66 == 65 +1
+            # [66, 67] # 67 == 66 +1
+            # [67, 68] # 68 == 67 +1
+
+        else
+            return false 
+        end
 
     end
 end
