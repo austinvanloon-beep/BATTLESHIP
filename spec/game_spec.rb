@@ -6,9 +6,6 @@ RSpec.describe Game do
     game = Game.new
   
     expect(game).to be_a(Game)
-    expect(@player).to be_a(Player)
-    expect(@opponent).to be_a(Player)
-
   end
 
   describe '#start_game' do
@@ -22,9 +19,11 @@ RSpec.describe Game do
     end
 
     it 'allows the user to choose to play by typing "p" has chosen to play, ' do
-      
+       expect(@game.user_input = 'p').to eq(true)
     end
     
+    
+
     it 'The computer player should place their ships. The baseline computer should simply use random placements but still adhere to the valid placement rules from iteration 2.' do
       board = Board.new
       cruiser = Ship.new("Cruiser", 3)

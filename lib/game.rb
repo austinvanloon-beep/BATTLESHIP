@@ -20,7 +20,10 @@ class Game
 
     if user_input == 'p'
       setup_game
+      play_turns
+      end_game
     elsif user_input == 'q'
+      puts "Goodbye!"
       quit_game
     else
       puts "Invalid input. Please try again."
@@ -30,7 +33,8 @@ class Game
   end
 
   def quit_game
-  
+    # refactor note do i need abort instead? not sure about what at_exit handlers are and if that's just a ruby on rails thing
+    exit
   end
 
   def setup_game
@@ -41,16 +45,6 @@ class Game
     end
   end
 
-  def end_game
-    if @player.each {|ships| ships.sunk?}
-      @player.ships.all?
-      puts "You won!"
-    elsif @opponent.each {|ships| ships.sunk?}
-      @opponent.ships.all?
-      puts "I won!"
-    end
-  end
-
   def display_boards
     puts "=============COMPUTER BOARD============="
     puts @opponent.board.render
@@ -58,5 +52,16 @@ class Game
     puts @player.board.render(true)
   end
 
+  def play_turns
+    
+  end
+
+  def end_game
+    if @player.all_ships_sunk? == true
+      puts "You won!"
+    elsif @opponent.all_ships_sunk? == true
+      puts "I won!"
+    end
+  end
 
 end
