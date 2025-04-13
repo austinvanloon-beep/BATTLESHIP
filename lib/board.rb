@@ -43,4 +43,8 @@ class Board
         return expected_render
     end
 
+    def valid_coordinate?(coordinate)
+        @cells.keys.include?(coordinate)
+      end
+
 end

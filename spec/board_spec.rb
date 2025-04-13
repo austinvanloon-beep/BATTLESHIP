@@ -20,14 +20,13 @@ RSpec.describe Board do
     end
 
     describe 'is validating coordinates' do
-
-        #board.valid_coordinate?("A1")
-        #board.valid_coordinate?("D4")
-        #board.valid_coordinate?("A5")
-        #board.valid_coordinate?("E1")
-        #board.valid_coordinate?("A22")
-
-    end
+        it 'returns true for a valid coordinate' do
+          board = Board.new
+          expect(board.valid_coordinate?("A1")).to eq(true)
+          expect(board.valid_coordinate?("D4")).to eq(true)
+        end
+      #valid coordinates^
+       
 
     describe 'is validating placements' do
         
