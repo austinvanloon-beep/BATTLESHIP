@@ -48,22 +48,21 @@ class Board
     end
 
     def valid_placement?(ship, coordinates)
+        
         return false unless coordinates.length == ship.length
         letters = coordinates.map { |coordinate| coordinate[0] }
         numbers = coordinates.map { |coordinate| coordinate[1..-1].to_i }
-      
+
         if letters.uniq.length == 1
-          return false unless consecutive?(numbers)
-        elsif numbers.uniq.length == 1 #may need refactor
-          return false unless consecutive?(letters.map { |letter| letter.ord }) #may need refactor
+            return false unless numbers.each_cons(2).all? { |a, b| b == a + 1 }
+        elsif numbers.uniq.length == 1
+            letter_numerical_values = letters.map { |letter| letter.ord }
+            return false unless letter_numerical_values.each_cons(2).all? { |a, b| b == a + 1 }
         else
-          return false 
+            return false 
         end
-      
+        return false if coordinates.any? { |coordinate| @cells[coordinate].empty? == false }
+
+    end
         true
     end
-
-    def consecutive?
-
-    end
-end
