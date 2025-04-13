@@ -1,7 +1,7 @@
-
-
 class Board
+
     attr_reader :cells
+
     def initialize
         @cells = {
             "A1" => Cell.new("A1"),
@@ -22,4 +22,25 @@ class Board
             "D4" => Cell.new("D4")
         }
     end
+
+    # future note for us to make sure that since we are not validing placement or coordinates in this method again on the Board class,
+    # we will need to do so somewhere else in the game logic, probably if we make a Player or Game class?
+    def place_ship(ship, coordinates)
+        coordinates.each do |coordinate|
+            @cells[coordinate].place_ship(ship)
+        end
+    end
+
+    # future refactor note -- if we make it to iteration 4, we may need to find a better way to handle larger and/or dynamic board sizes
+    def render(show_ship = false)
+        expected_render = 
+        "  1 2 3 4 \n" +
+        "A #{@cells["A1"].render(show_ship)} #{@cells["A2"].render(show_ship)} #{@cells["A3"].render(show_ship)} #{@cells["A4"].render(show_ship)} \n" +
+        "B #{@cells["B1"].render(show_ship)} #{@cells["B2"].render(show_ship)} #{@cells["B3"].render(show_ship)} #{@cells["B4"].render(show_ship)} \n" +
+        "C #{@cells["C1"].render(show_ship)} #{@cells["C2"].render(show_ship)} #{@cells["C3"].render(show_ship)} #{@cells["C4"].render(show_ship)} \n" +
+        "D #{@cells["D1"].render(show_ship)} #{@cells["D2"].render(show_ship)} #{@cells["D3"].render(show_ship)} #{@cells["D4"].render(show_ship)} \n" 
+        
+        return expected_render
+    end
+
 end
