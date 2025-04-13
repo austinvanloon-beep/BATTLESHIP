@@ -77,10 +77,11 @@ RSpec.describe Board do
 
             expect(cell_3.ship == cell_2.ship).to eq(true)
         end
-    # can't test this until Austin finishes the validation logic
+    
         it 'is not overlapping ships' do
 
-        
+            submarine = Ship.new("Submarine", 2) 
+            @board.valid_placement?(submarine, ["A1", "B1"])
         end
     end
 
