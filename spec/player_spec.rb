@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 RSpec.describe Player do
-    #binding.pry
     before(:each) do
         @player1 = Player.new("computer")
         @player2 = Player.new("player")
@@ -24,6 +23,24 @@ RSpec.describe Player do
       
         it 'starts with no ships' do
             expect(@player1.ships).to eq([])
+        end
+    end
+
+    describe '#place ship array' do
+   
+        it 'ship list' do
+            @board = Board.new
+            @player1 = Player.new("computer")
+            @player2 = Player.new("player")
+            cruiser = Ship.new("Cruiser", 3)
+            submarine = Ship.new("Submarine", 2)
+            @player1.board.place_ship(cruiser, ["A1", "A2", "A3"])
+            @player1.board.place_ship(submarine, ["B1", "B2"])
+            @player1.create_ships
+        end
+
+        it '___' do
+            
         end
     end
 end
