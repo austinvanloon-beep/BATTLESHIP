@@ -88,16 +88,6 @@ RSpec.describe Board do
 
         
         end
-
-        # it 'add cruiser and sub to ship array' do
-        #     @player1 = Player.new("computer")
-        #     @player2 = Player.new("player")
-        #     cruiser = Ship.new("Cruiser", 3)
-        #     submarine = Ship.new("Submarine", 2)
-        #     @board.place_ship(cruiser, ["A1", "A2", "A3"])
-        #     @board.place_ship(submarine, ["B1", "B2"])
-        #     expect(@player1.ships).to eq([cruiser, submarine])
-        # end
     end
 
     describe 'is rendering board' do

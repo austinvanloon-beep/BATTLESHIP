@@ -26,21 +26,44 @@ RSpec.describe Player do
         end
     end
 
-    describe '#place ship array' do
+    describe '#create ship list' do
    
-        it 'ship list' do
-            @board = Board.new
+        before(:each) do
             @player1 = Player.new("computer")
             @player2 = Player.new("player")
             cruiser = Ship.new("Cruiser", 3)
             submarine = Ship.new("Submarine", 2)
-            @player1.board.place_ship(cruiser, ["A1", "A2", "A3"])
-            @player1.board.place_ship(submarine, ["B1", "B2"])
-            @player1.create_ships
+        end
+
+        it 'adds ships to the ship list' do
+
+            @player1.create_ship_lists(@cruiser)
+            @player1.create_ship_lists(@submarine)
+
+            expect(@player1.ships).to include(@cruiser)
+            expect(@player1.ships).to include(@submarine)
+            expect(@player1.ships.length). to eq(2)
         end
 
         it '___' do
-            
+            #computer player test
+        end
+    end
+
+    describe '#all_ships_sunk' do
+        it 'returns true when all ships sunk' do
+            cruiser = Ship.new("Cruiser", 3)
+            submarine = Ship.new("Submarine", 2)
+            player = Player.new("player")
+
+            player.create_ship_lists(cruiser)
+            player.create_ship_lists(submarine)
+
+            cruiser.hit
+            cruiser.hit
+
+            expect(cruiser.sunk?).to be(false)
+            expect(player.all_ships_sunk).to eq(false)
         end
     end
 end
