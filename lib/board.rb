@@ -64,5 +64,6 @@ class Board
         return false if coordinates.any? { |coordinate| @cells[coordinate].empty? == false }
 
     end
-        true
+
+    
 end

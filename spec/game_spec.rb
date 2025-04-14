@@ -6,6 +6,8 @@ RSpec.describe Game do
     game = Game.new
   
     expect(game).to be_a(Game)
+
+    
   end
 
   describe '#start_game' do
@@ -66,21 +68,23 @@ RSpec.describe Game do
       @board = Board.new
       @cruiser = Ship.new("Cruiser", 3)
       @submarine = Ship.new("Submarine", 2)
+      @player1 = Player.new("computer")
+      @player2 = Player.new("player")
     end
 
     it 'The game is over when either the computer or the user sinks all of the enemy ships.' do
     
     end
     
-    # it 'When this happens, the user should see a message stating who won:' do
+    it 'When this happens, the user should see a message stating who won:' do
     
-    #   @player.all_ships_sunk?
-    #   expect(@game.end_game).to eq("You won!")
+      @player2.all_ships_sunk? == true
+      expect(@game.end_game).to eq("You won!")
 
-    #   @opponent.all_ships_sunk? == true
-    #   expect(@game.end_game).to eq("I won!")
+      @player1.all_ships_sunk? == true
+      expect(@game.end_game).to eq("I won!")
     
-    # end
+    end
  
     it 'Whenever a game ends, they should return to this message so they can start a new game, or quit.' do
 
