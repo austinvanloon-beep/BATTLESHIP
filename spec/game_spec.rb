@@ -3,9 +3,19 @@ require 'spec_helper'
 RSpec.describe Game do
 
   describe '#initialize' do
-    game = Game.new
+    it 'exists' do
+      game = Game.new
   
-    expect(game).to be_a(Game)
+      expect(game).to be_a(Game)
+    end 
+
+    it 'creates instances of a player and a computer' do
+      expect(@player).to be_a(Player)
+      expect(@player.is_computer).to eq(false)
+
+      expect(@computer).to be_a(Player)
+      expect(@computer.is_computer).to eq(true)
+    end
   end
 
   describe '#start_game' do
@@ -14,48 +24,57 @@ RSpec.describe Game do
       @game = Game.new
     end
 
-    it 'shows the player the main menu where they can play or quit' do
+    it 'shows the player the welcome message and main menu options' do
       expect(@game.welcome_message).to eq("Welcome to BATTLESHIP\nEnter 'p' to play. Enter 'q' to quit.")
     end
 
-    it 'allows the user to choose to play by typing "p" has chosen to play, ' do
-       expect(@game.user_input = 'p').to eq(true)
+    it 'allows the user to choose to play by typing "p"' do
+      expect(@game.user_input = 'p').to eq(true)
     end
 
+    it 'allows the user to choose to quit by typing "q"' do
+      expect(@game.user_input = 'q').to eq(true)
+    end
+
+    it 'recognizes an invalid input option and re-prompts user to a valid one' do
+      expect(@game.user_input = 'x').to eq("Invalid input. Please try again.")
+    end
   end
+
+  describe '#setup_game' do
+    it '"prompts" both players to place ships' do
     
+    end
+  end
+  
+  describe '#play_turns' do
+    it 'loops turns until one player loses all ships' do
+    
+    end
+
+    it 'correctly calls #take_turn method for each player for each turn' do
+    
+    end
+  end
+
   describe '#play_turns' do
 
-    it 'The computer player should place their ships. The baseline computer should simply use random placements but still adhere to the valid placement rules from iteration 2.' do
-      board = Board.new
-      cruiser = Ship.new("Cruiser", 3)
-      submarine = Ship.new("Submarine", 2)
-    end
-    
-    it 'you need to place the computer’s ships and the players ships to set up the game.' do
-
-    end
-
-    it 'Computer can place ships randomly in valid locations' do
-    
-    end
-
-    it 'User can enter valid sequences to place both ships' do
-
-    end
-
-    it 'Entering invalid ship placements prompts user to enter valid placements' do
-
-    end
-
-    it 'At the start of the turn, the user is shown both boards. The user should see their ships but not the computer’s ships:' do
-      expected_render = 
+    before(:each) do
+      @board = Board.new
+      @cruiser = Ship.new("Cruiser", 3)
+      @submarine = Ship.new("Submarine", 2)
+    end    
+  end
   
+  describe '#display_boards'
+    it 'renders the boards for player and computer correctly' do
+      expected_render = 
+
       puts "=============COMPUTER BOARD============="
       puts @opponent.board.render
       puts "==============PLAYER BOARD=============="
       puts @player.board.render(true)
-  
+
       expect(display_boards).to eq(expected_render)
     end
   end
@@ -66,26 +85,21 @@ RSpec.describe Game do
       @board = Board.new
       @cruiser = Ship.new("Cruiser", 3)
       @submarine = Ship.new("Submarine", 2)
+      @player1 = Player.new("computer")
+      @player2 = Player.new("player")
+      @player1.computer_player
+      @player2.computer_player
     end
 
-    it 'The game is over when either the computer or the user sinks all of the enemy ships.' do
+    it 'announces the winner when a player wins' do
+      # @player1.all_ships_sunk? == true
+      expect(@game.end_game).to eq("You won!")
+
+      # @player1.all_ships_sunk? == true
+      expect(@game.end_game).to eq("I won!")
+    end
+
+    it 'returns to main menu after game ends' do
     
     end
-    
-    # it 'When this happens, the user should see a message stating who won:' do
-    
-    #   @player.all_ships_sunk?
-    #   expect(@game.end_game).to eq("You won!")
-
-    #   @opponent.all_ships_sunk? == true
-    #   expect(@game.end_game).to eq("I won!")
-    
-    # end
- 
-    it 'Whenever a game ends, they should return to this message so they can start a new game, or quit.' do
-
-    end
-  end
-  
-  
 end

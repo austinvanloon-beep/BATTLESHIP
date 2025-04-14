@@ -4,6 +4,8 @@ RSpec.describe Player do
     before(:each) do
         @player1 = Player.new("computer")
         @player2 = Player.new("player")
+        @player1.computer_player
+        @player2.computer_player
     end
 
     describe '#initialize' do
@@ -51,7 +53,7 @@ RSpec.describe Player do
     end
 
     describe '#all_ships_sunk' do
-        it 'returns false if one is afloat' do
+        it 'returns false if at least one is afloat' do
             cruiser = Ship.new("Cruiser", 3)
             submarine = Ship.new("Submarine", 2)
             player = Player.new("player")
@@ -59,6 +61,7 @@ RSpec.describe Player do
             player.create_ship_lists(cruiser)
             player.create_ship_lists(submarine)
 
+            cruiser.hit
             cruiser.hit
             cruiser.hit
 
@@ -72,6 +75,7 @@ RSpec.describe Player do
             cruiser = Ship.new("Cruiser", 3)
             submarine = Ship.new("Submarine", 2)
             
+
             player.create_ship_lists(cruiser)
             player.create_ship_lists(submarine)
 
@@ -81,7 +85,9 @@ RSpec.describe Player do
             submarine.hit
             submarine.hit
 
-            expect(player.all_ships_sunk).to be true
+            expect(player.all_ships_sunk?).to be true
+
         end
     end
+    
 end
