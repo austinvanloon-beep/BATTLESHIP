@@ -12,7 +12,7 @@ class Player
     # note to revisit / refactor of what we have now for #create_ship_list method so that the player, when placing a ship,
     # that doesn't necessarily always add it to the @ships array, like if it isn't a valid placement in the first place
     # maybe something like this (with adjusted method names of course)
-
+  
     # def place_ship(ship_list)
         
     #     ship_list.each do |ship|
@@ -26,7 +26,8 @@ class Player
     #     end
     # end
 
-    def create_ship_list(ship)
+    def create_ship_lists(ship)
+
         @ships << ship
     end
 

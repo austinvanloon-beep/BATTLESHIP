@@ -28,42 +28,45 @@ RSpec.describe Player do
         end
     end
 
-    describe '#create_ship_list' do
+    describe '#create ship list' do
    
         before(:each) do
-            @cruiser = Ship.new("Cruiser", 3)
-            @submarine = Ship.new("Submarine", 2)
+            @player1 = Player.new("computer")
+            @player2 = Player.new("player")
+            cruiser = Ship.new("Cruiser", 3)
+            submarine = Ship.new("Submarine", 2)
         end
 
         it 'adds ships to the ship list' do
-            
-            @player1.create_ship_list(@cruiser)
-            @player1.create_ship_list(@submarine)
-            
+
+            @player1.create_ship_lists(@cruiser)
+            @player1.create_ship_lists(@submarine)
+
             expect(@player1.ships).to include(@cruiser)
             expect(@player1.ships).to include(@submarine)
-            expect(@player1.ships.length).to eq(2)
+            expect(@player1.ships.length). to eq(2)
+        end
+
+        it '___' do
+            #computer player test
         end
     end
-        # placeholder for what Austin does separately
-    describe '#all_ships_sunk?' do
 
-        it 'returns false if at least one ship is still afloat' do
-            player = Player.new("player")
+    describe '#all_ships_sunk' do
+        it 'returns false if at least one is afloat' do
             cruiser = Ship.new("Cruiser", 3)
             submarine = Ship.new("Submarine", 2)
+            player = Player.new("player")
 
-            player.create_ship_list(cruiser)
-            player.create_ship_list(submarine)
+            player.create_ship_lists(cruiser)
+            player.create_ship_lists(submarine)
 
             cruiser.hit
             cruiser.hit
             cruiser.hit
-        
-            expect(cruiser.sunk?).to be true
-            expect(submarine.sunk?).to be false
 
-            expect(player.all_ships_sunk?).to be false
+            expect(cruiser.sunk?).to be(false)
+            expect(player.all_ships_sunk).to eq(false)
         end
 
         it 'returns true if all ships are sunk' do
@@ -72,8 +75,9 @@ RSpec.describe Player do
             cruiser = Ship.new("Cruiser", 3)
             submarine = Ship.new("Submarine", 2)
             
-            player.create_ship_list(cruiser)
-            player.create_ship_list(submarine)
+
+            player.create_ship_lists(cruiser)
+            player.create_ship_lists(submarine)
 
             cruiser.hit
             cruiser.hit
@@ -82,6 +86,7 @@ RSpec.describe Player do
             submarine.hit
 
             expect(player.all_ships_sunk?).to be true
+
         end
     end
     
