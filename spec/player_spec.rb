@@ -51,7 +51,7 @@ RSpec.describe Player do
     end
 
     describe '#all_ships_sunk' do
-        it 'returns true when all ships sunk' do
+        it 'returns false if one is afloat' do
             cruiser = Ship.new("Cruiser", 3)
             submarine = Ship.new("Submarine", 2)
             player = Player.new("player")
@@ -64,6 +64,24 @@ RSpec.describe Player do
 
             expect(cruiser.sunk?).to be(false)
             expect(player.all_ships_sunk).to eq(false)
+        end
+
+        it 'returns true if all ships are sunk' do
+            
+            player = Player.new("player")
+            cruiser = Ship.new("Cruiser", 3)
+            submarine = Ship.new("Submarine", 2)
+            
+            player.create_ship_lists(cruiser)
+            player.create_ship_lists(submarine)
+
+            cruiser.hit
+            cruiser.hit
+            cruiser.hit
+            submarine.hit
+            submarine.hit
+
+            expect(player.all_ships_sunk).to be true
         end
     end
 end
