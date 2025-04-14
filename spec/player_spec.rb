@@ -4,6 +4,8 @@ RSpec.describe Player do
     before(:each) do
         @player1 = Player.new("computer")
         @player2 = Player.new("player")
+        @player1.computer_player
+        @player2.computer_player
     end
 
     describe '#initialize' do
@@ -26,19 +28,26 @@ RSpec.describe Player do
         end
     end
 
-    describe '#place ship array' do
+    describe '#create_ship_list' do
    
-        it 'ship list' do
-            @board = Board.new
+        before(:each) do
             @player1 = Player.new("computer")
             @player2 = Player.new("player")
-            cruiser = Ship.new("Cruiser", 3)
-            submarine = Ship.new("Submarine", 2)
-            @player1.board.place_ship(cruiser, ["A1", "A2", "A3"])
-            @player1.board.place_ship(submarine, ["B1", "B2"])
-            @player1.create_ships
+            @cruiser = Ship.new("Cruiser", 3)
+            @submarine = Ship.new("Submarine", 2)
         end
 
+        it 'adds ships to the ship list' do
+            
+            @player1.create_ship_list(@cruiser)
+            @player1.create_ship_list(@submarine)
+            
+            expect(@player1.ships).to include(@cruiser)
+            expect(@player1.ships).to include(@submarine)
+            expect(@player1.ships.length).to eq(2)
+        end
+
+        # placeholder for what Austin does separately
         it '___' do
             
         end
