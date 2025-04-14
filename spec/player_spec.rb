@@ -31,8 +31,6 @@ RSpec.describe Player do
     describe '#create_ship_list' do
    
         before(:each) do
-            @player1 = Player.new("computer")
-            @player2 = Player.new("player")
             @cruiser = Ship.new("Cruiser", 3)
             @submarine = Ship.new("Submarine", 2)
         end
@@ -46,10 +44,45 @@ RSpec.describe Player do
             expect(@player1.ships).to include(@submarine)
             expect(@player1.ships.length).to eq(2)
         end
-
+    end
         # placeholder for what Austin does separately
-        it '___' do
+    describe '#all_ships_sunk?' do
+
+        it 'returns false if at least one ship is still afloat' do
+            player = Player.new("player")
+            cruiser = Ship.new("Cruiser", 3)
+            submarine = Ship.new("Submarine", 2)
+
+            player.create_ship_list(cruiser)
+            player.create_ship_list(submarine)
+
+            cruiser.hit
+            cruiser.hit
+            cruiser.hit
+        
+            expect(cruiser.sunk?).to be true
+            expect(submarine.sunk?).to be false
+
+            expect(player.all_ships_sunk?).to be false
+        end
+
+        it 'returns true if all ships are sunk' do
             
+            player = Player.new("player")
+            cruiser = Ship.new("Cruiser", 3)
+            submarine = Ship.new("Submarine", 2)
+            
+            player.create_ship_list(cruiser)
+            player.create_ship_list(submarine)
+
+            cruiser.hit
+            cruiser.hit
+            cruiser.hit
+            submarine.hit
+            submarine.hit
+
+            expect(player.all_ships_sunk?).to be true
         end
     end
+    
 end

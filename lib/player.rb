@@ -43,8 +43,12 @@ class Player
     #         fire_prompt(opponents_board)
     #     end
     # end
+
+    def create_ship_list(ship)
+        @ships << ship
+    end
     
-    def all_ships_sunk
+    def all_ships_sunk?
         @ships.all? {|ship| ship.sunk?}
     end
 
