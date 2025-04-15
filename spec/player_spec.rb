@@ -33,8 +33,8 @@ RSpec.describe Player do
         before(:each) do
             @player1 = Player.new("computer")
             @player2 = Player.new("player")
-            cruiser = Ship.new("Cruiser", 3)
-            submarine = Ship.new("Submarine", 2)
+            @cruiser = Ship.new("Cruiser", 3)
+            @submarine = Ship.new("Submarine", 2)
         end
 
         it 'adds ships to the ship list' do

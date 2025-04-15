@@ -36,9 +36,46 @@ class Game
     exit
   end
 
-  def setup_game(ships)  
-    @player.create_ship_lists(ships)
-    @computer.create_ship_lists(ships)
+  def setup_game
+
+    # add sassy personality flair here for computer maybe?
+    ship_options = {
+      "1" => { name: "Cruiser", length: 3 },
+      "2" => { name: "Submarine", length: 2 }
+    }
+    
+    puts "Choose the ships you'll play with:\n\n"
+    
+    ship_options.each do |key, ship_info|
+      puts "#{key}. #{ship_info[:name]} (#{ship_info[:length]} spaces)"
+    end
+
+    print "\nHow many ships would you like to use? "
+    ship_count = gets.chomp.to_i
+  
+    chosen_ships = []
+  
+    ship_count.times do |i|
+      print "Enter the number for Ship #{i + 1}: "
+      input = gets.chomp
+      ship_info = ship_options[input]
+      
+      if ship_info
+        chosen_ships << Ship.new(ship_info[:name], ship_info[:length])
+      else
+        puts "Invalid input. Please try again."
+        redo
+      end
+  
+    puts "\nGreat! For this game, you and the computer will both use:"
+      chosen_ships.each { |s| puts "- #{s.name} (#{s.length})" }
+    end
+    
+    # add personality flair here
+    @computer.place_ships(chosen_ships)
+    puts "\nI have placed my ships randomly on the board. Now it's your turn."
+    
+    @player.place_ships(chosen_ships)
   end
 
   def display_boards
