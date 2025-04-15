@@ -3,7 +3,7 @@ class Game
   attr_reader :player, :computer
 
   def initialize
-   @player = Player.new
+   @player = Player.new("player")
    @computer = Player.new("computer")
    @computer.computer_player
   end
@@ -36,13 +36,9 @@ class Game
     exit
   end
 
-  def setup_game
-    cruiser = Ship.new("Cruiser", 3)
-    submarine = Ship.new("Submarine", 2)
-    ships = [cruiser, submarine]
-  
-    @player.place_ships(ships)
-    @computer.place_ships(ships)
+  def setup_game(ships)  
+    @player.create_ship_lists(ships)
+    @computer.create_ship_lists(ships)
   end
 
   def display_boards
@@ -63,11 +59,15 @@ class Game
 
   def end_game
     if @player.all_ships_sunk? == true
-      puts "You won!"
+      puts "\nYou won!\n"
     elsif @computer.all_ships_sunk? == true
-      puts "I won!"
+      puts "\nI won!\n"
     end
+  
+  puts "\nReturning to main menu...\n\n"
+  start_game
+  
   end
 
-  
+
 end

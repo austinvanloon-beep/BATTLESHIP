@@ -26,10 +26,16 @@ class Player
     #     end
     # end
 
-    def create_ship_lists(ship)
-
-        @ships << ship
+    # needed to refactor this to allow this method to accept either a single ship or an array of ships
+    def create_ship_lists(ships)
+        if ships.is_a?(Array)
+          ships.each { |ship| @ships << ship }
+        else
+          @ships << ships
+        end
     end
+      
+      
 
     # placeholder for what Austin does separately for player turn
     def prompt_for_ship_placement

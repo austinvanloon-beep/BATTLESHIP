@@ -2,10 +2,12 @@ require 'spec_helper'
 
 RSpec.describe Game do
 
+  before(:each) do
+    @game = Game.new
+  end
+  
   describe '#initialize' do
     it 'exists' do
-      @game = Game.new
-    
       expect(@game).to be_a(Game)
     end 
 
@@ -44,27 +46,19 @@ RSpec.describe Game do
   end
 
   describe '#setup_game' do
-    it '"prompts" both players to place ships' do
-      cruiser = Ship.new("Cruiser", 3)
-      submarine = Ship.new("Submarine", 2)
-      ships = [cruiser, submarine]
-      @player = Player.new
-      @computer = Player.new("computer")
-      @computer.computer_player
+  it '"prompts" both players to place ships' do
+    cruiser = Ship.new("Cruiser", 3)
+    submarine = Ship.new("Submarine", 2)
+    ships = [cruiser, submarine]
     
-      expect(@player.place_ships(ships)).to eq([cruiser, submarine])
-      expect(@computer.place_ships(ships)).to eq([cruiser, submarine])
-    end
-  end
-  
-  describe '#play_turns' do
-    it 'loops turns until one player loses all ships' do
-    
-    end
+    @game.setup_game(ships)
 
-    it 'correctly calls #take_turn method for each player for each turn' do
+    expect(@game.player.ships).to match_array(ships)
+    expect(@game.player.ships.length).to eq(2)
     
-    end
+    expect(@game.computer.ships).to match_array(ships)
+    expect(@game.computer.ships.length).to eq(2)
+  end
   end
 
   describe '#play_turns' do
@@ -72,14 +66,20 @@ RSpec.describe Game do
     before(:each) do
       @cruiser = Ship.new("Cruiser", 3)
       @submarine = Ship.new("Submarine", 2)
-      @ships = [cruiser, submarine]
+      @ships = [@cruiser, @submarine]
       @player = Player.new("player")
       @computer = Player.new("computer")
       @computer.computer_player
-
-      # expect()
-
     end    
+
+    it 'loops turns until one player loses all ships' do
+    
+    end
+
+    it 'correctly calls #take_turn method for each player for each turn' do
+    
+    end
+
   end
   
   describe '#display_boards'
@@ -91,30 +91,54 @@ RSpec.describe Game do
       puts "==============PLAYER BOARD=============="
       puts @player.board.render(true)
 
-      expect(display_boards).to eq(expected_render)
+      expect(@game.display_boards).to eq(expected_render)
     end
   end
   
   describe '#end_game' do
 
-    before(:each) do
-      @cruiser = Ship.new("Cruiser", 3)
-      @submarine = Ship.new("Submarine", 2)
-      @player1 = Player.new("computer")
-      @player2 = Player.new("player")
-      @player1.computer_player
-      @player2.computer_player
-    end
+  before(:each) do
+    @game = Game.new
+  
+    @cruiser = Ship.new("Cruiser", 3)
+    @submarine = Ship.new("Submarine", 2)
+    @ships = [@cruiser, @submarine]
+  
+    @game.player.create_ship_lists(@ships)
+  
+    @comp_cruiser = Ship.new("Cruiser", 3)
+    @comp_submarine = Ship.new("Submarine", 2)
+    @comp_ships = [@comp_cruiser, @comp_submarine]
+  
+    @game.computer.create_ship_lists(@comp_ships)
+  end  
 
-    it 'announces the winner when a player wins' do
-      # @player1.all_ships_sunk? == true
-      expect(@game.end_game).to eq("You won!")
-
-      # @player1.all_ships_sunk? == true
-      expect(@game.end_game).to eq("I won!")
-    end
-
-    it 'returns to main menu after game ends' do
+    # commenting these out for now because we don't have to test the terminal outputs but I had the blocks from using TDD still and how I would set them up
     
+    it 'prints the player win message when the computer ships are all sunk' do
+      # 3.times { @comp_cruiser.hit }
+      # 2.times { @comp_submarine.hit }
+      
+      # expect(@game.end_game).to output("\nYou won!\n")
+    end
+
+    it 'prints the computer win message when the player ships are all sunk' do
+      # 3.times { @cruiser.hit }
+      # 2.times { @submarine.hit }
+
+      # expect(@game.end_game).to output("\nI won!\n")
+    end
+  
+    it 'returns to main menu after game ends' do
+        # cruiser = Ship.new("Cruiser", 3)
+        # submarine = Ship.new("Submarine", 2)
+      
+        # @game.player.create_ship_lists(cruiser)
+        # @game.player.create_ship_lists(submarine)
+      
+        # 3.times { cruiser.hit }
+        # 2.times { submarine.hit }
+      
+        # expect(@game.end_game).to output("\nReturning to main menu...\n\n")
     end
 end

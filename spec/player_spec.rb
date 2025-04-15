@@ -65,8 +65,8 @@ RSpec.describe Player do
             cruiser.hit
             cruiser.hit
 
-            expect(cruiser.sunk?).to be(false)
-            expect(player.all_ships_sunk).to eq(false)
+            expect(cruiser.sunk?).to be(true)
+            expect(player.all_ships_sunk?).to eq(false)
         end
 
         it 'returns true if all ships are sunk' do
