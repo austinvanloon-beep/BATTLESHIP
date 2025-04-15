@@ -154,18 +154,35 @@ RSpec.describe Player do
     end
 
     describe '#take_turn' do
-    it 'prompts the user to enter a target coordinate' do
-      player = Player.new("player")
-      allow(player).to receive(:gets).and_return("A1")
-      result = player.take_turn
-      expect(result).to eq("A1")
-    end
+        it 'prompts the user to enter a target coordinate' do
+        player = Player.new("player")
+        allow(player).to receive(:gets).and_return("A1")
+        result = player.take_turn
+        expect(result).to eq("A1")
+        end
   
-    it 'selects a random target for computer' do
-      player = Player.new("computer")
-      player.computer_player
-      result = player.take_turn
-      expect(player.board.cells.keys).to include(result)
+        it 'selects a random target for computer' do
+        player = Player.new("computer")
+        player.computer_player
+        result = player.take_turn
+        expect(player.board.cells.keys).to include(result)
+        end
     end
-  end
+
+    describe '#fire_on' do
+    it 'fires on a valid cell and tracks the shot' do
+        player = Player.new("player")
+        player.create_ship_lists(Ship.new("Cruiser", 3))
+        opponent = Player.new("computer")
+        opponent.create_ship_lists(Ship.new("Submarine", 2))
+
+        player.place_ships([Ship.new("Cruiser", 3)])
+        opponent.place_ships([Ship.new("Submarine", 2)])
+
+        expect(opponent.board.cells["A1"].ship).to be_nil
+        player.fire_on(opponent.board, "A1")
+
+        expect(opponent.board.cells["A1"].shot).to eq(true)
+        end
+    end
 end
