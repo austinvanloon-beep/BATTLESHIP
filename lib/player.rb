@@ -67,7 +67,7 @@ class Player
           valid_coords << coord unless valid_coords.include?(coord)
         end
         valid_coords
-      end
+    end
 
     # placeholder for what Austin does separately for computer turn
     # placeholder for what Austin does separately to recognize player1 (human) board vs player2 (computer) board

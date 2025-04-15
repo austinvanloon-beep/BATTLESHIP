@@ -72,10 +72,10 @@ class Game
     end
     
     # add personality flair here
-    @computer.place_ships(chosen_ships)
+    @computer.place_ship(chosen_ships)
     puts "\nI have placed my ships randomly on the board. Now it's your turn."
     
-    @player.place_ships(chosen_ships)
+    @player.place_ship(chosen_ships)
   end
 
   def display_boards
