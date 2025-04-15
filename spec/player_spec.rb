@@ -48,10 +48,6 @@ RSpec.describe Player do
             expect(@player1.ships).to include(@submarine)
             expect(@player1.ships.length). to eq(2)
         end
-
-        # it '___' do
-        #     #computer player test
-        # end
     end
 
     describe '#all_ships_sunk' do
@@ -93,6 +89,7 @@ RSpec.describe Player do
     end
 
     describe '#prompt_for_coordinates' do
+
         it 'recognizes invalid input and re-prompts the user for a valid input' do
         player = Player.new("player")
         allow(player).to receive(:gets).and_return("Z1", "A1")
@@ -104,19 +101,21 @@ RSpec.describe Player do
     end
 
     describe '#place_ship_randomly' do
+
         it 'places a ship randomly in a valid location' do
 
         player = Player.new("computer")
         player.computer_player
         ship = Ship.new("submarine", 2)
 
-        player.place_ship_random(ship)
+        player.place_ship_randomly(ship)
 
         expect(player.ships).to include(ship)
         end
     end
 
     describe '#place_ship' do
+
         it 'can place ships manually for human' do
             player = Player.new("player")
             ship = Ship.new("Cruiser", 3)
@@ -154,23 +153,33 @@ RSpec.describe Player do
         end
     end
 
+    # feels like we're missing something here calling the player.take_turn method which requires an argument
+    # opponent = Player.new("opponent")
+    # player.take_turn(opponent.board)
+
     describe '#take_turn' do
         it 'prompts the user to enter a target coordinate' do
             player = Player.new("player")
             allow(player).to receive(:gets).and_return("A1")
+            
             result = player.take_turn
+
             expect(result).to eq("A1")
         end
   
         it 'selects a random target for computer' do
             player = Player.new("computer")
             player.computer_player
+            
             result = player.take_turn
+
             expect(player.board.cells.keys).to include(result)
         end
     end
 
+    # I don't see a method for this test yet, may need to refactor/use the fire_upon method from Cell class?
     describe '#fire_on' do
+
         it 'fires on a valid cell and tracks the shot' do
             player = Player.new("player")
             player.create_ship_lists(Ship.new("Cruiser", 3))
