@@ -11,15 +11,25 @@ class Player
 
   
     def place_ship(ship_list)
-        
         ship_list.each do |ship|
-            if @is_computer
-              place_ship_randomly(ship)
-            else
-              prompt_for_ship_placement(ship)
-            end
+          if @is_computer
+            place_ship_random(ship)
+          else
+            coordinates = prompt_for_ship_placement(ship)
+            @board.place(ship, coordinates)
+          end
+          @ships << ship
+        end
+    end
 
-        @ships << ship
+    def place_ship_randomly(ship)
+        placed = false
+        until placed
+            coordinates = board.generate_randomly_coordinates(ship.length)
+            if board.valid_placement?(ship, coordinates)
+                board.place_ship(ship, coordinates)
+                placed = true
+            end
         end
     end
 
@@ -27,12 +37,13 @@ class Player
     # that doesn't necessarily always add it to the @ships array, like if it isn't a valid placement in the first place
     # maybe something like this (with adjusted method names of course)
 
-    def create_ship_lists(ship, coordinates)
-        if board.valid_placement?(ship, coordinates)
-          board.place_ship(ship, coordinates)
-          @ships << ship
+    #(place ship on board)
+  # needed to refactor this to allow this method to accept either a single ship or an array of ships
+    def create_ship_lists(ships)
+        if ships.is_a?(Array)
+      ships.each { |ship| @ships << ship }
         else
-          puts "Invalid placement. Please try again." unless @is_computer
+        @ships << ships
         end
     end
 
@@ -46,20 +57,18 @@ class Player
         end
         input
     end
-    
-    # placeholder for what Austin does separately for computer turn
-    def place_ship_randomly(ship)
-        placed = false
-        until placed
-            coordinates = board.generate_random_coordinates(ship.length)
-            if board.valid_placement?(ship, coordinates)
-                board.place_ship(ship, coordinates)
-                @ships << ship
-                placed = true
-            end
-        end
-    end
 
+    def generate_valid_random_coordinates(length)
+        valid_coords = []
+      
+        until valid_coords.length == length
+          coord = @board.cells.keys.sample
+          valid_coords << coord unless valid_coords.include?(coord)
+        end
+        valid_coords
+      end
+
+    # placeholder for what Austin does separately for computer turn
     # placeholder for what Austin does separately to recognize player1 (human) board vs player2 (computer) board
     def take_turn(opponents_board)
         if @is_computer == true

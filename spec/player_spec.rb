@@ -113,4 +113,59 @@ RSpec.describe Player do
         expect(player.ships).to include(ship)
         end
     end
+
+    describe '#place_ship' do
+        it 'can place ships manually for human' do
+            player = Player.new("player")
+            ship = Ship.new("Cruiser", 3)
+
+            allow(player).to receive(:gets).and_return("A1 A2 A3")
+            player.place_ship([ship])
+
+            expect(player.ships).to include(ship)
+            expect(player.board.cells["A1"].ship).to eq(ship)
+            expect(player.board.cells["A2"].ship).to eq(ship)
+            expect(player.board.cells["A3"].ship).to eq(ship)
+        end
+
+        it 'places ships randomly for computer' do
+            player = Player.new("computer")
+            player.computer_player
+            ship = Ship.new("Submarine", 2)
+        
+            player.place_ship([ship])
+        
+            expect(player.ships).to include(ship)
+            expect(player.board.cells).to have_key(player.board.random_coordinates)
+          end
+        end
+    end
+
+    describe '#generate_valid_random_coordinates' do
+        it 'returns a list of coordinates' do
+            player = Player.new("computer")
+            player.computer_player
+
+            result = player.generate_valid_random_coordinates(3)
+
+            expect(result).to be_an(Array)
+            expect(result.length).to eq(3)
+        end
+    end
+
+    describe '#take_turn' do
+    it 'prompts the user to enter a target coordinate' do
+      player = Player.new("player")
+      allow(player).to receive(:gets).and_return("A1")
+      result = player.take_turn
+      expect(result).to eq("A1")
+    end
+  
+    it 'selects a random target for computer' do
+      player = Player.new("computer")
+      player.computer_player
+      result = player.take_turn
+      expect(player.board.cells.keys).to include(result)
+    end
+  end
 end
