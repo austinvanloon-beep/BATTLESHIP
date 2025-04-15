@@ -47,9 +47,9 @@ RSpec.describe Player do
             expect(@player1.ships.length). to eq(2)
         end
 
-        it '___' do
-            #computer player test
-        end
+        # it '___' do
+        #     #computer player test
+        # end
     end
 
     describe '#all_ships_sunk' do
@@ -89,5 +89,28 @@ RSpec.describe Player do
 
         end
     end
-    
+
+    describe '#prompt_for_coordinates' do
+        it 'recognizes invalid input and re-prompts the user for a valid input' do
+        player = Player.new("player")
+        allow(player).to receive(:gets).and_return("Z1", "A1")
+
+        expect(player).to receive(:gets).twice
+        coordinate = player.prompt_for_coordinates
+        expect(coordinate).to eq("A1")
+        end
+    end
+
+    describe '#place_ship_randomly' do
+        it 'places a ship randomly in a valid location' do
+
+        player = Player.new("computer")
+        player.computer_player
+        ship = Ship.new("submarine", 2)
+
+        player.place_ship_random(ship)
+
+        expect(player.ships).to include(ship)
+        end
+    end
 end
