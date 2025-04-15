@@ -47,9 +47,9 @@ RSpec.describe Player do
             expect(@player1.ships.length). to eq(2)
         end
 
-        it '___' do
-            #computer player test
-        end
+        # it '___' do
+        #     #computer player test
+        # end
     end
 
     describe '#all_ships_sunk' do
@@ -89,5 +89,100 @@ RSpec.describe Player do
 
         end
     end
-    
+
+    describe '#prompt_for_coordinates' do
+        it 'recognizes invalid input and re-prompts the user for a valid input' do
+        player = Player.new("player")
+        allow(player).to receive(:gets).and_return("Z1", "A1")
+
+        expect(player).to receive(:gets).twice
+        coordinate = player.prompt_for_coordinates
+        expect(coordinate).to eq("A1")
+        end
+    end
+
+    describe '#place_ship_randomly' do
+        it 'places a ship randomly in a valid location' do
+
+        player = Player.new("computer")
+        player.computer_player
+        ship = Ship.new("submarine", 2)
+
+        player.place_ship_random(ship)
+
+        expect(player.ships).to include(ship)
+        end
+    end
+
+    describe '#place_ship' do
+        it 'can place ships manually for human' do
+            player = Player.new("player")
+            ship = Ship.new("Cruiser", 3)
+
+            allow(player).to receive(:gets).and_return("A1 A2 A3")
+            player.place_ship([ship])
+
+            expect(player.ships).to include(ship)
+            expect(player.board.cells["A1"].ship).to eq(ship)
+            expect(player.board.cells["A2"].ship).to eq(ship)
+            expect(player.board.cells["A3"].ship).to eq(ship)
+        end
+
+        it 'places ships randomly for computer' do
+            player = Player.new("computer")
+            player.computer_player
+            ship = Ship.new("Submarine", 2)
+        
+            player.place_ship([ship])
+        
+            expect(player.ships).to include(ship)
+            expect(player.board.cells).to have_key(player.board.random_coordinates)
+          end
+        end
+    end
+
+    describe '#generate_valid_random_coordinates' do
+        it 'returns a list of coordinates' do
+            player = Player.new("computer")
+            player.computer_player
+
+            result = player.generate_valid_random_coordinates(3)
+
+            expect(result).to be_an(Array)
+            expect(result.length).to eq(3)
+        end
+    end
+
+    describe '#take_turn' do
+        it 'prompts the user to enter a target coordinate' do
+        player = Player.new("player")
+        allow(player).to receive(:gets).and_return("A1")
+        result = player.take_turn
+        expect(result).to eq("A1")
+        end
+  
+        it 'selects a random target for computer' do
+        player = Player.new("computer")
+        player.computer_player
+        result = player.take_turn
+        expect(player.board.cells.keys).to include(result)
+        end
+    end
+
+    describe '#fire_on' do
+    it 'fires on a valid cell and tracks the shot' do
+        player = Player.new("player")
+        player.create_ship_lists(Ship.new("Cruiser", 3))
+        opponent = Player.new("computer")
+        opponent.create_ship_lists(Ship.new("Submarine", 2))
+
+        player.place_ships([Ship.new("Cruiser", 3)])
+        opponent.place_ships([Ship.new("Submarine", 2)])
+
+        expect(opponent.board.cells["A1"].ship).to be_nil
+        player.fire_on(opponent.board, "A1")
+
+        expect(opponent.board.cells["A1"].shot).to eq(true)
+        end
+    end
 end
