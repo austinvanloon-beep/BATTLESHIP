@@ -86,11 +86,11 @@ RSpec.describe Game do
           @player2 = Player.new("player")
           @player1.computer_player
 
-          expected_render = 
-          "=============COMPUTER BOARD============="
-          @player1.board.render
-          "==============PLAYER BOARD=============="
-          @player2.board.render(true)
+          # expected_render = 
+          # "=============COMPUTER BOARD============="
+          # @player1.board.render
+          # "==============PLAYER BOARD=============="
+          # @player2.board.render(true)
 
           # not testing terminal output but confirmed board rendering is working
           expect(@game.display_boards).to output(expected_render)
