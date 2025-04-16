@@ -60,7 +60,7 @@ RSpec.describe Game do
           # added a stub here as well for the computer's place_ship_randomly so it doesn’t loop infinitely
           allow(game.computer).to receive(:place_ship_randomly) do |ship|
             coordinates = game.computer.generate_valid_random_coordinates(ship.length)
-            game.computer.board.place(ship, coordinates)
+            game.computer.board.place_ship(ship, coordinates)
           end
         
           game.setup_game
@@ -92,6 +92,7 @@ RSpec.describe Game do
           @cruiser = Ship.new("Cruiser", 3)
           @submarine = Ship.new("Submarine", 2)
           @ships = [@cruiser, @submarine]
+
           @player = Player.new("player")
           @computer = Player.new("computer")
           @computer.computer_player
@@ -126,47 +127,62 @@ RSpec.describe Game do
 
         before(:each) do
             @game = Game.new
-          
+
             @cruiser = Ship.new("Cruiser", 3)
             @submarine = Ship.new("Submarine", 2)
             @ships = [@cruiser, @submarine]
-          
-            @game.player.create_ship_lists(@ships)
-          
-            @comp_cruiser = Ship.new("Cruiser", 3)
-            @comp_submarine = Ship.new("Submarine", 2)
-            @comp_ships = [@comp_cruiser, @comp_submarine]
-          
-            @game.computer.create_ship_lists(@comp_ships)
-        end  
 
-        # commenting these out for now because we don't have to test the terminal outputs but I had the blocks from using TDD still and how I would set them up
+            # added stubs for the player ship placement inputs and the computers random ship placements
+            allow(@game.player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"], ["B1", "B2"])
+            allow(@game.player).to receive(:gets).and_return("A1 A2 A3", "B1 B2")
+
+            allow(@game.computer).to receive(:place_ship_randomly) do |ship|
+              coords = @game.computer.generate_valid_random_coordinates(ship.length)
+              @game.computer.board.place_ship(ship, coords)
+              @game.computer.ships << ship
+            end
+
+            @game.player.place_ship(@ships)
+            @game.computer.place_ship(@ships)
+
+            # also added a stub to prevent the start_game method from actually running during the test
+            allow(@game).to receive(:start_game)
+        end
+
+        ### commenting these out for now because we don't have to test the terminal outputs
+        ### but we had the blocks from using TDD still and how we would set them up;
+        ### not sure the expect statements are correctly formatted though, will discuss during evaluation
         
         it 'prints the player win message when the computer ships are all sunk' do
-          # 3.times { @comp_cruiser.hit }
-          # 2.times { @comp_submarine.hit }
-          
+          @game.player.ships.each do |ship| 
+            ship.length.times do 
+                ship.hit
+            end
+          end
+          expect(@game.computer.all_ships_sunk?).to be true
           # expect(@game.end_game).to output("\nYou won!\n")
         end
 
         it 'prints the computer win message when the player ships are all sunk' do
-          # 3.times { @cruiser.hit }
-          # 2.times { @submarine.hit }
-
+          @game.player.ships.each do |ship| 
+              ship.length.times do 
+                  ship.hit
+              end
+          end
+      
+          expect(@game.player.all_ships_sunk?).to be true
           # expect(@game.end_game).to output("\nI won!\n")
         end
       
         it 'returns to main menu after game ends' do
-            # cruiser = Ship.new("Cruiser", 3)
-            # submarine = Ship.new("Submarine", 2)
+          # nifty refactor to have the ships iterate upon themselves to hit the number of times their health (length) is!
+          @game.player.ships.each do |ship| 
+            ship.length.times do 
+                ship.hit
+            end
+          end
           
-            # @game.player.create_ship_lists(cruiser)
-            # @game.player.create_ship_lists(submarine)
-          
-            # 3.times { cruiser.hit }
-            # 2.times { submarine.hit }
-          
-            # expect(@game.end_game).to output("\nReturning to main menu...\n\n")
+          # expect(@game.end_game).to output("\nReturning to main menu...\n\n")
         end
     end
 
