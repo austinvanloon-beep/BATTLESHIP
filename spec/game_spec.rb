@@ -67,6 +67,7 @@ RSpec.describe Game do
           allow(game.computer).to receive(:place_ship_randomly) do |ship|
             coordinates = game.computer.generate_valid_random_coordinates(ship.length)
               game.computer.board.place_ship(ship, coordinates)
+              game.computer.ships << ship
           end
         
           game.setup_game
