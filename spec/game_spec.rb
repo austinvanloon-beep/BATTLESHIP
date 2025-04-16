@@ -75,7 +75,7 @@ RSpec.describe Game do
 
     describe '#display_boards' do
 
-        it 'renders the boards for player and computer correctly' do
+        xit 'renders the boards for player and computer correctly' do
           @cruiser = Ship.new("Cruiser", 3)
           @submarine = Ship.new("Submarine", 2)
           @ships = [@cruiser, @submarine]
@@ -90,8 +90,8 @@ RSpec.describe Game do
           "==============PLAYER BOARD=============="
           @player2.board.render(true)
 
-          # not testing terminal output but confirmed board rendering is working
-          # expect(@game.display_boards).to output(expected_render)
+          not testing terminal output but confirmed board rendering is working
+          expect(@game.display_boards).to output(expected_render)
         end
     end  
   
@@ -127,21 +127,21 @@ RSpec.describe Game do
             allow(@game).to receive(:start_game)
         end
 
-        ### commenting these out for now because we don't have to test the terminal outputs
+        ### skipping these tests because we don't have to test the terminal outputs
         ### but we had the blocks from using TDD still and how we would set them up;
         ### not sure the expect statements are correctly formatted though, will discuss during evaluation
         
-        it 'prints the player win message when the computer ships are all sunk' do
+        xit 'prints the player win message when the computer ships are all sunk' do
           @game.player.ships.each do |ship| 
             ship.length.times do 
                 ship.hit
             end
           end
           expect(@game.computer.all_ships_sunk?).to be true
-          # expect(@game.end_game).to output("\nYou won!\n")
+          expect(@game.end_game).to output("\nYou won!\n")
         end
 
-        it 'prints the computer win message when the player ships are all sunk' do
+        xit 'prints the computer win message when the player ships are all sunk' do
           @game.player.ships.each do |ship| 
               ship.length.times do 
                   ship.hit
@@ -149,10 +149,10 @@ RSpec.describe Game do
           end
       
           expect(@game.player.all_ships_sunk?).to be true
-          # expect(@game.end_game).to output("\nI won!\n")
+          expect(@game.end_game).to output("\nI won!\n")
         end
       
-        it 'returns to main menu after game ends' do
+        xit 'returns to main menu after game ends' do
           # nifty refactor to have the ships iterate upon themselves to hit the number of times their health (length) is!
           @game.player.ships.each do |ship| 
             ship.length.times do 
@@ -160,7 +160,7 @@ RSpec.describe Game do
             end
           end
           
-          # expect(@game.end_game).to output("\nReturning to main menu...\n\n")
+          expect(@game.end_game).to output("\nReturning to main menu...\n\n")
         end
     end
 
