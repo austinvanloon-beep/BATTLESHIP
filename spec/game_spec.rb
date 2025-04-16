@@ -73,55 +73,33 @@ RSpec.describe Game do
         end
     end
 
-    # describe '#display_boards' do
+    describe '#display_boards' do
 
-    #     it 'renders the boards for player and computer correctly' do
-    #       expected_render = 
-    #       "=============COMPUTER BOARD============="
-    #       @computer.board.render
-    #       "==============PLAYER BOARD=============="
-    #       @player.board.render(true)
-
-    #       # expect(@game.display_boards).to output(expected_render)
-    #     end
-    # end  
-  
-    describe '#play_turns' do
-
-        before(:each) do
+        it 'renders the boards for player and computer correctly' do
           @cruiser = Ship.new("Cruiser", 3)
           @submarine = Ship.new("Submarine", 2)
           @ships = [@cruiser, @submarine]
 
-          @player = Player.new("player")
-          @computer = Player.new("computer")
-          @computer.computer_player
-        end    
+          @player1 = Player.new("computer")
+          @player2 = Player.new("player")
+          @player1.computer_player
 
-        # not sure if we need to test for this or not, but I thought I would leave a note either way
-        # but the use-case where the player would have no ships afloat at the beginning of the turn/start of the game 
-        # (i.e., not an empty array, but ships with 0 health), did arise in testing and I had to force quit the terminal
-        # so I added `until @player.all_ships_sunk? == true || @computer.all_ships_sunk? == true` to the method as a safeguard
-        it 'breaks the play_turns loop if a player has no ships left' do
-        
-        end
-        
-        # waiting on Austin's updates on player class to fully test this
-        it 'correctly calls #take_turn method for each player for each turn' do
-        # Displays boards
+          expected_render = 
+          "=============COMPUTER BOARD============="
+          @player1.board.render
+          "==============PLAYER BOARD=============="
+          @player2.board.render(true)
 
-        # Player takes a turn against the computer
-        
-        # If computer is sunk, breaks the loop
-        
-        # Computer takes a turn against the player
+          # not testing terminal output but confirmed board rendering is working
+          # expect(@game.display_boards).to output(expected_render)
         end
-        
-        # waiting on Austin's updates on player class to fully test this
-        it 'loops turns until one player loses all their ships' do
-        
-        end
-    end
+    end  
+  
+  
+          # not sure if we need to test for this or not, but I thought I would leave a note either way
+          # but the use-case where the player would have no ships afloat at the beginning of the turn/start of the game 
+          # (i.e., not an empty array, but ships with 0 health), did arise in testing and I had to force quit the terminal
+          # so I added `until @player.all_ships_sunk? == true || @computer.all_ships_sunk? == true` to the method as a safeguard
   
     describe '#end_game' do
 

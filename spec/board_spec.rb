@@ -91,7 +91,6 @@ RSpec.describe Board do
             @board = Board.new
             @cruiser = Ship.new("Cruiser", 3)
         end
-
         it 'in a  4x4 grid formation with cells containing ships hidden by default' do
             @board.place_ship(@cruiser, ["A1", "A2", "A3"]) 
 
