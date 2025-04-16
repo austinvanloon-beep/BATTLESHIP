@@ -20,38 +20,35 @@ class Cell
     @fired_upon
   end
 
-  # question for later -- is this like when the user/player chooses a cell to "attack?"
-  # refactor note may need to revisit this when we code the user input logic
-  def fire_upon(fire_coordinate)
-    if fire_coordinate == @coordinate
-      if empty? == true
-        @fired_upon = true
-      elsif empty? == false
-        @ship.hit
-        @fired_upon = true
-      end
-    end
+  # future refactor note, the interaction pattern indicataed to be able to pass a cell argument into this method
+  # but I think we can simplify to `fire_upon` without needing an argument and let the object manage its own state instead?
+  def fire_upon(cell)
+    # added this to prevent double damage being possible
+    return if @fired_upon
+
+    @fired_upon = true
+    @ship.hit unless empty?
   end
 
-  # refactor note, I wonder if we could use what we learned about falsey and truthy to simplify this
-  # since any object that's not 'nil' or 'false' is treated as truthy.
-  
-  # added an optional argument that isn't required when calling the method by setting a default value
+  # check this method out later to make sure it's working correctly in game logic
   def render(show_ship = false)
-    if fired_upon? == false
-      if show_ship == true && empty? == false
-        return "S"
+    if fired_upon?
+      if empty?
+        "M"
+      elsif @ship.sunk?
+        "X"
       else
-        return "."
+        "H"
       end
-    elsif fired_upon? == true && empty? == true
-      return "M"
-    elsif fired_upon? == true && empty? == false && @ship.sunk? == true
-      return "X"
-    elsif fired_upon? == true && empty? == false
-      return "H"
+    else
+      if show_ship && empty? == false
+        "S"
+      else
+        "."
+      end
     end
   end
+  
 
   
 end

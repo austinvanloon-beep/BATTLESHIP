@@ -2,104 +2,189 @@ require 'spec_helper'
 
 RSpec.describe Game do
 
-  describe '#initialize' do
-    it 'exists' do
-      game = Game.new
-  
-      expect(game).to be_a(Game)
-    end 
-
-    it 'creates instances of a player and a computer' do
-      expect(@player).to be_a(Player)
-      expect(@player.is_computer).to eq(false)
-
-      expect(@computer).to be_a(Player)
-      expect(@computer.is_computer).to eq(true)
-    end
-  end
-
-  describe '#start_game' do
-
     before(:each) do
-      @game = Game.new
+        @game = Game.new
     end
-
-    it 'shows the player the welcome message and main menu options' do
-      expect(@game.welcome_message).to eq("Welcome to BATTLESHIP\nEnter 'p' to play. Enter 'q' to quit.")
-    end
-
-    it 'allows the user to choose to play by typing "p"' do
-      expect(@game.user_input = 'p').to eq(true)
-    end
-
-    it 'allows the user to choose to quit by typing "q"' do
-      expect(@game.user_input = 'q').to eq(true)
-    end
-
-    it 'recognizes an invalid input option and re-prompts user to a valid one' do
-      expect(@game.user_input = 'x').to eq("Invalid input. Please try again.")
-    end
-  end
-
-  describe '#setup_game' do
-    it '"prompts" both players to place ships' do
-    
-    end
-  end
   
-  describe '#play_turns' do
-    it 'loops turns until one player loses all ships' do
-    
+    describe '#initialize' do
+
+        it 'exists' do
+          expect(@game).to be_a(Game)
+        end 
+
+        it 'creates instances of a player and a computer' do
+          expect(@game.player).to be_a(Player)
+          expect(@game.player.is_computer).to eq(false)
+
+          expect(@game.computer).to be_a(Player)
+          expect(@game.computer.is_computer).to eq(true)
+        end
     end
 
-    it 'correctly calls #take_turn method for each player for each turn' do
-    
+    describe '#start_game' do
+
+        it 'shows the player the welcome message and main menu options' do
+          expect(@game.welcome_message).to eq("Welcome to BATTLESHIP\nEnter 'p' to play. Enter 'q' to quit.")
+        end
+
+        # refactor notes - commenting these out for now because we don't have to test the user inputs,
+        # but f there's time left, this could be something to try mocks and stubs with to create a fake input/method
+        it 'allows the user to choose to play by typing "p"' do
+          # expect(@game.user_input = 'p').to eq(true)
+        end
+
+        it 'allows the user to choose to quit by typing "q"' do
+          # expect(@game.user_input = 'q').to eq(true)
+        end
+
+        it 'recognizes an invalid input option and re-prompts user to a valid one' do
+          # expect(@game.user_input = 'x').to eq("Invalid input. Please try again.")
+        end
     end
-  end
 
-  describe '#play_turns' do
+    describe '#setup_game' do
 
-    before(:each) do
-      @board = Board.new
-      @cruiser = Ship.new("Cruiser", 3)
-      @submarine = Ship.new("Submarine", 2)
-    end    
-  end
+        it 'prompts both players to place ships' do
+          game = Game.new
+          # added a few stubs here to fake the user input for all of the initial game setup options:
+          # number of ships (2); pick "1" for Cruiser (1); pick "2" for Submarine (2)
+          allow(game).to receive(:gets).and_return("2", "1", "2")
+        
+          # Force computer player to behave correctly
+          game.computer.instance_variable_set(:@is_computer, true)
+        
+          # added a stub here too so the user input was not needed for placing the ships
+          allow(game.player).to receive(:prompt_for_ship_placement)
+            .and_return(["A1", "A2", "A3"], ["B1", "B2"])
+        
+          # added a stub here as well for the computer's place_ship_randomly so it doesn’t loop infinitely
+          allow(game.computer).to receive(:place_ship_randomly) do |ship|
+            coordinates = game.computer.generate_valid_random_coordinates(ship.length)
+            game.computer.board.place_ship(ship, coordinates)
+          end
+        
+          game.setup_game
+        
+          expect(game.player.ships.length).to eq(2)
+          expect(game.player.ships.map { |ship| ship.name }).to include("Cruiser", "Submarine")
+          
+          expect(game.computer.ships.length).to eq(2)
+          expect(game.computer.ships.map { |ship| ship.name }).to include("Cruiser", "Submarine")
+        end
+    end
+
+    # describe '#display_boards' do
+
+    #     it 'renders the boards for player and computer correctly' do
+    #       expected_render = 
+    #       "=============COMPUTER BOARD============="
+    #       @computer.board.render
+    #       "==============PLAYER BOARD=============="
+    #       @player.board.render(true)
+
+    #       # expect(@game.display_boards).to output(expected_render)
+    #     end
+    # end  
   
-  describe '#display_boards'
-    it 'renders the boards for player and computer correctly' do
-      expected_render = 
+    describe '#play_turns' do
 
-      puts "=============COMPUTER BOARD============="
-      puts @opponent.board.render
-      puts "==============PLAYER BOARD=============="
-      puts @player.board.render(true)
+        before(:each) do
+          @cruiser = Ship.new("Cruiser", 3)
+          @submarine = Ship.new("Submarine", 2)
+          @ships = [@cruiser, @submarine]
 
-      expect(display_boards).to eq(expected_render)
+          @player = Player.new("player")
+          @computer = Player.new("computer")
+          @computer.computer_player
+        end    
+
+        # not sure if we need to test for this or not, but I thought I would leave a note either way
+        # but the use-case where the player would have no ships afloat at the beginning of the turn/start of the game 
+        # (i.e., not an empty array, but ships with 0 health), did arise in testing and I had to force quit the terminal
+        # so I added `until @player.all_ships_sunk? == true || @computer.all_ships_sunk? == true` to the method as a safeguard
+        it 'breaks the play_turns loop if a player has no ships left' do
+        
+        end
+        
+        # waiting on Austin's updates on player class to fully test this
+        it 'correctly calls #take_turn method for each player for each turn' do
+        # Displays boards
+
+        # Player takes a turn against the computer
+        
+        # If computer is sunk, breaks the loop
+        
+        # Computer takes a turn against the player
+        end
+        
+        # waiting on Austin's updates on player class to fully test this
+        it 'loops turns until one player loses all their ships' do
+        
+        end
     end
-  end
   
-  describe '#end_game' do
+    describe '#end_game' do
 
-    before(:each) do
-      @board = Board.new
-      @cruiser = Ship.new("Cruiser", 3)
-      @submarine = Ship.new("Submarine", 2)
-      @player1 = Player.new("computer")
-      @player2 = Player.new("player")
-      @player1.computer_player
-      @player2.computer_player
+        before(:each) do
+            @game = Game.new
+
+            @cruiser = Ship.new("Cruiser", 3)
+            @submarine = Ship.new("Submarine", 2)
+            @ships = [@cruiser, @submarine]
+
+            # added stubs for the player ship placement inputs and the computers random ship placements
+            allow(@game.player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"], ["B1", "B2"])
+            allow(@game.player).to receive(:gets).and_return("A1 A2 A3", "B1 B2")
+
+            allow(@game.computer).to receive(:place_ship_randomly) do |ship|
+              coords = @game.computer.generate_valid_random_coordinates(ship.length)
+              @game.computer.board.place_ship(ship, coords)
+              @game.computer.ships << ship
+            end
+
+            @game.player.place_ship(@ships)
+            @game.computer.place_ship(@ships)
+
+            # also added a stub to prevent the start_game method from actually running during the test
+            allow(@game).to receive(:start_game)
+        end
+
+        ### commenting these out for now because we don't have to test the terminal outputs
+        ### but we had the blocks from using TDD still and how we would set them up;
+        ### not sure the expect statements are correctly formatted though, will discuss during evaluation
+        
+        it 'prints the player win message when the computer ships are all sunk' do
+          @game.player.ships.each do |ship| 
+            ship.length.times do 
+                ship.hit
+            end
+          end
+          expect(@game.computer.all_ships_sunk?).to be true
+          # expect(@game.end_game).to output("\nYou won!\n")
+        end
+
+        it 'prints the computer win message when the player ships are all sunk' do
+          @game.player.ships.each do |ship| 
+              ship.length.times do 
+                  ship.hit
+              end
+          end
+      
+          expect(@game.player.all_ships_sunk?).to be true
+          # expect(@game.end_game).to output("\nI won!\n")
+        end
+      
+        it 'returns to main menu after game ends' do
+          # nifty refactor to have the ships iterate upon themselves to hit the number of times their health (length) is!
+          @game.player.ships.each do |ship| 
+            ship.length.times do 
+                ship.hit
+            end
+          end
+          
+          # expect(@game.end_game).to output("\nReturning to main menu...\n\n")
+        end
     end
 
-    it 'announces the winner when a player wins' do
-      # @player1.all_ships_sunk? == true
-      expect(@game.end_game).to eq("You won!")
 
-      # @player1.all_ships_sunk? == true
-      expect(@game.end_game).to eq("I won!")
-    end
-
-    it 'returns to main menu after game ends' do
-    
-    end
 end

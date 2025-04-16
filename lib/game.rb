@@ -3,7 +3,7 @@ class Game
   attr_reader :player, :computer
 
   def initialize
-   @player = Player.new
+   @player = Player.new("player")
    @computer = Player.new("computer")
    @computer.computer_player
   end
@@ -37,12 +37,45 @@ class Game
   end
 
   def setup_game
-    cruiser = Ship.new("Cruiser", 3)
-    submarine = Ship.new("Submarine", 2)
-    ships = [cruiser, submarine]
+
+    # add sassy personality flair here for computer maybe?
+    ship_options = {
+      "1" => { name: "Cruiser", length: 3 },
+      "2" => { name: "Submarine", length: 2 }
+    }
+    
+    puts "Choose the ships you'll play with:\n\n"
+    
+    ship_options.each do |key, ship_info|
+      puts "#{key}. #{ship_info[:name]} (#{ship_info[:length]} spaces)"
+    end
+
+    print "\nHow many ships would you like to use? "
+    ship_count = gets.chomp.to_i
   
-    @player.place_ships(ships)
-    @computer.place_ships(ships)
+    chosen_ships = []
+  
+    ship_count.times do |i|
+      print "Enter the number for Ship #{i + 1}: "
+      input = gets.chomp
+      ship_info = ship_options[input]
+      
+      if ship_info
+        chosen_ships << Ship.new(ship_info[:name], ship_info[:length])
+      else
+        puts "Invalid input. Please try again."
+        redo
+      end
+  
+    puts "\nGreat! For this game, you and the computer will both use:"
+      chosen_ships.each { |s| puts "- #{s.name} (#{s.length})" }
+    end
+    
+    # add personality flair here
+    @computer.place_ship(chosen_ships)
+    puts "\nI have placed my ships randomly on the board. Now it's your turn."
+    
+    @player.place_ship(chosen_ships)
   end
 
   def display_boards
@@ -63,11 +96,15 @@ class Game
 
   def end_game
     if @player.all_ships_sunk? == true
-      puts "You won!"
+      puts "\nYou won!\n"
     elsif @computer.all_ships_sunk? == true
-      puts "I won!"
+      puts "\nI won!\n"
     end
+  
+  puts "\nReturning to main menu...\n\n"
+  start_game
+  
   end
 
-  
+
 end
