@@ -53,11 +53,22 @@ RSpec.describe Ship do
         it 'does sink if it takes enough hits to reduce health to 0 (3 hits for Cruiser)' do
 
             cruiser = Ship.new("Cruiser", 3)
-            cruiser.hit
-            cruiser.hit
-            cruiser.hit
+            3.times { cruiser.hit }
+
             expect(cruiser.health).to eq(0)
             expect(cruiser.sunk?).to eq(true)
         end
+
+        it 'does not reduce health further if already sunk' do
+            submarine = Ship.new("Submarine", 2)
+            2.times { submarine.hit }
+
+            expect(submarine.health).to eq(0)
+            
+            submarine.hit
+            
+            expect(submarine.health).to eq(0)
+          end
+          
     end
 end 

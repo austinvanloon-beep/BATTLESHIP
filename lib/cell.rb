@@ -22,7 +22,7 @@ class Cell
 
   # future refactor note, the interaction pattern indicataed to be able to pass a cell argument into this method
   # but I think we can simplify to `fire_upon` without needing an argument and let the object manage its own state instead?
-  def fire_upon(cell)
+  def fire_upon
     # added this to prevent double damage being possible
     return if @fired_upon
 
@@ -30,7 +30,6 @@ class Cell
     @ship.hit unless empty?
   end
 
-  # check this method out later to make sure it's working correctly in game logic
   def render(show_ship = false)
     if fired_upon?
       if empty?
@@ -49,6 +48,5 @@ class Cell
     end
   end
   
-
   
 end
