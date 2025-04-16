@@ -16,27 +16,45 @@ class Player
         end
     end
 
-    def prompt_for_coordinates
-        puts "Enter a coordinate to fire on:"
-        user_input = gets.chomp.upcase
+    def prompt_for_ship_placement(ship)
+        puts "Enter the coordinates for the #{ship.name} (#{ship.length} spaces):"
+        gets.chomp.strip.upcase.split
+    end  
       
-        until @board.valid_coordinate?(user_input)
-            puts "Invalid coordinate. Try again:"
-            user_input = gets.chomp.upcase
-        end
-      
-        user_input
-    end
-
     def place_ship(ship_list)
         ship_list.each do |ship|
           if @is_computer
-            place_ship_random(ship)
+            place_ship_randomly(ship)
           else
             coordinates = prompt_for_ship_placement(ship)
-            @board.place(ship, coordinates)
+            @board.place_ship(ship, coordinates)
           end
+
           @ships << ship
+        end
+    end
+      
+    def prompt_for_coordinates(opponents_board)
+        puts "Enter a coordinate to fire on:"
+        
+        loop do
+            user_input = gets.chomp.strip.upcase
+            
+            if opponents_board.valid_coordinate?(user_input)
+                return user_input
+            else
+                puts "Invalid coordinate. Try again:"
+            end
+        end
+    end
+
+    def fire_prompt(opponents_board)
+        loop do 
+            coordinate = prompt_for_coordinates(opponents_board)
+            unless opponents_board.cells[coordinate].fired_upon?
+                opponents_board.cells[coordinate].fire_upon(coordinate)
+                break
+            end
         end
     end
 
@@ -60,22 +78,11 @@ class Player
             if board.valid_placement?(ship, coordinates)
                 board.place_ship(ship, coordinates)
                 placed = true
-            end
+                @ships << ship
+            end            
         end
-
-        @ships << ship
     end
       
-    def fire_prompt(opponents_board)
-        loop do 
-            coordinate = prompt_for_coordinates
-            unless opponents_board.cells[coordinate].fired_upon?
-                opponents_board.cells[coordinate].fire_upon(coordinate)
-                break
-            end
-        end
-    end
-   
     def fire_randomly(opponents_board)
         loop do
             coordinate = opponents_board.cells.keys.sample
