@@ -50,9 +50,22 @@ class Game
       puts "#{key}. #{ship_info[:name]} (#{ship_info[:length]} spaces)"
     end
 
-    print "\nHow many ships would you like to use? "
-    ship_count = gets.chomp.to_i
-  
+    puts "\nHow many ships would you like to use?"
+    
+    max_ships = ship_options.length
+    ship_count = nil
+
+    loop do
+      print "Enter a number (1 to #{max_ships}): "
+      input = gets.chomp.to_i
+      if input.between?(1, max_ships)
+        ship_count = input
+        break
+      else
+        puts "Invalid number. Please choose a number between 1 and #{max_ships}."
+      end
+    end
+
     chosen_ships = []
   
     ship_count.times do |i|

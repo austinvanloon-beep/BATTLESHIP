@@ -57,7 +57,7 @@ RSpec.describe Cell do
 
     it 'has been fired upon and damages any contained ships' do
       @cell.place_ship(@cruiser)
-      @cell.fire_upon("B4")
+      @cell.fire_upon
 
       expect(@cell.ship.health).to eq(2)
       expect(@cell.fired_upon?).to eq(true)
@@ -90,14 +90,14 @@ RSpec.describe Cell do
     end
 
     it 'returns "M" if the cell has been fired upon and does not contain a ship' do
-      @cell_1.fire_upon("B4")
+      @cell_1.fire_upon
       
       expect(@cell_1.render).to eq("M")
     end
 
     it 'returns "H" if the cell has been fired upon and contains a ship' do
       @cell_2.place_ship(@cruiser)
-      @cell_2.fire_upon("C3")
+      @cell_2.fire_upon
 
       expect(@cell_2.render).to eq("H")
 
@@ -107,13 +107,9 @@ RSpec.describe Cell do
 
     it 'returns "X" if the cell has been fired upon and its ship has sunk' do
       @cell_2.place_ship(@cruiser)
-      @cell_2.fire_upon("C3")
+      @cell_2.fire_upon
       
-      # refactor note -- seeing all three hits like this made me think there is probably a loop we could use
-      # I think i used 'x.times { object.method }' in the war_or_peace project to create 13 cards for each suit
-      # so maybe that could look like '3.times {@cruiser.hit}'
-      @cruiser.hit
-      @cruiser.hit
+      3.times {@cruiser.hit}
 
       @cruiser.sunk?
       
