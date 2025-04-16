@@ -9,6 +9,25 @@ class Player
         @is_computer = false
     end
 
+    def computer_player
+
+        if @name == "computer"
+            @is_computer = true
+        end
+    end
+
+    def prompt_for_coordinates
+        puts "Enter a coordinate to fire on:"
+        user_input = gets.chomp.upcase
+      
+        until @board.valid_coordinate?(user_input)
+            puts "Invalid coordinate. Try again:"
+            user_input = gets.chomp.upcase
+        end
+      
+        user_input
+    end
+
     def place_ship(ship_list)
         ship_list.each do |ship|
           if @is_computer
@@ -19,6 +38,18 @@ class Player
           end
           @ships << ship
         end
+    end
+
+    def generate_valid_random_coordinates(length)
+
+        valid_coordinates = []
+      
+        until valid_coordinates.length == length
+            coordinate = @board.cells.keys.sample
+            valid_coordinates << coordinate unless valid_coordinates.include?(coordinate)
+        end
+
+        valid_coordinates
     end
 
     def place_ship_randomly(ship)
@@ -35,38 +66,24 @@ class Player
         @ships << ship
     end
       
-    def prompt_for_coordinates
-        puts "Enter a coordinate to fire on:"
-        user_input = gets.chomp.upcase
-      
-        until @board.valid_coordinate?(user_input)
-            puts "Invalid coordinate. Try again:"
-            user_input = gets.chomp.upcase
-        end
-      
-        user_input
-    end
-      
     def fire_prompt(opponents_board)
-        coordinate = prompt_for_coordinates
-        opponents_board.cells[coordinate].fire_upon(coordinate)
-    end
-
-    def generate_valid_random_coordinates(length)
-
-        valid_coordinates = []
-      
-        until valid_coordinates.length == length
-            coordinate = @board.cells.keys.sample
-            valid_coordinates << coordinate unless valid_coordinates.include?(coordinate)
+        loop do 
+            coordinate = prompt_for_coordinates
+            unless opponents_board.cells[coordinate].fired_upon?
+                opponents_board.cells[coordinate].fire_upon(coordinate)
+                break
+            end
         end
-
-        valid_coordinates
     end
-
+   
     def fire_randomly(opponents_board)
-        coordinate = opponents_board.cells.keys.sample
-        opponents_board.cells[coordinate].fire_upon(coordinate)
+        loop do
+            coordinate = opponents_board.cells.keys.sample
+            unless opponents_board.cells[coordinate].fired_upon?
+                opponents_board.cells[coordinate].fire_upon(coordinate)
+                break
+            end
+        end
     end
 
     def take_turn(opponents_board)
@@ -81,13 +98,6 @@ class Player
     def all_ships_sunk?
         
         @ships.all? {|ship| ship.sunk?}
-    end
-
-    def computer_player
-
-        if @name == "computer"
-            @is_computer = true
-        end
     end
 
 
