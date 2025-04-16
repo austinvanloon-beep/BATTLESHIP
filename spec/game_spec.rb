@@ -47,8 +47,10 @@ RSpec.describe Game do
         it 'prompts both players to place ships' do
           game = Game.new
           # added a few stubs here to fake the user input for all of the initial game setup options:
-          # number of ships (2); pick "1" for Cruiser (1); pick "2" for Submarine (2)
-          allow(game).to receive(:gets).and_return("2", "1", "2")
+          # number of ships (2); pick "1" for Cruiser (1); pick "2" for Submarine (2), 
+          # and since the `redo` could make it ask for that same ship again, add in other stubs to prevent that
+          allow(game).to receive(:gets).and_return("2", "1", "2", "1", "2")
+
         
           # Force computer player to behave correctly
           game.computer.instance_variable_set(:@is_computer, true)
@@ -90,7 +92,7 @@ RSpec.describe Game do
           "==============PLAYER BOARD=============="
           @player2.board.render(true)
 
-          not testing terminal output but confirmed board rendering is working
+          # not testing terminal output but confirmed board rendering is working
           expect(@game.display_boards).to output(expected_render)
         end
     end  
