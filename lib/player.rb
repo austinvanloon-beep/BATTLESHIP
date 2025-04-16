@@ -34,15 +34,6 @@ class Player
 
         @ships << ship
     end
-
-    # do we still need this one now that we have specified the human and player ship placement?    
-    def create_ship_lists(ships)
-        if ships.is_a?(Array)
-      ships.each { |ship| @ships << ship }
-        else
-        @ships << ships
-        end
-    end
       
     def prompt_for_coordinates
         puts "Enter a coordinate to fire on:"

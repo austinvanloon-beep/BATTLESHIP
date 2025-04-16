@@ -30,23 +30,68 @@ RSpec.describe Player do
         end
     end
 
-    describe '#create ship list' do
-   
-        before(:each) do
-            @player1 = Player.new("computer")
-            @player2 = Player.new("player")
-            @cruiser = Ship.new("Cruiser", 3)
-            @submarine = Ship.new("Submarine", 2)
+    describe '#place_ship' do
+    
+        it 'adds ships to the player ship list' do
+            player = Player.new("player")
+            ship = Ship.new("Cruiser", 3)
+            # added a mock and a stub here to allow this test to function without actual user input
+            allow(player).to receive(:gets).and_return("A1 A2 A3")
+        
+            player.place_ship([ship])
+        
+            expect(player.ships).to include(ship)
+            expect(player.ships.length).to eq(1)
+        end
+    
+        it 'can place ships manually for human' do
+            player = Player.new("player")
+            ship = Ship.new("Cruiser", 3)
+
+            allow(player).to receive(:gets).and_return("A1 A2 A3")
+            player.place_ship([ship])
+
+            expect(player.ships).to include(ship)
+            expect(player.board.cells["A1"].ship).to eq(ship)
+            expect(player.board.cells["A2"].ship).to eq(ship)
+            expect(player.board.cells["A3"].ship).to eq(ship)
         end
 
-        it 'adds ships to the ship list' do
+        it 'places ships randomly for computer' do
+            player = Player.new("computer")
+            player.computer_player
+            ship = Ship.new("Submarine", 2)
+        
+            player.place_ship([ship])
+        
+            expect(player.ships).to include(ship)
+            expect(player.board.cells).to have_key(player.board.random_coordinates)
+        end
+    end
 
-            @player1.create_ship_lists(@cruiser)
-            @player1.create_ship_lists(@submarine)
+    describe '#place_ship_randomly' do
 
-            expect(@player1.ships).to include(@cruiser)
-            expect(@player1.ships).to include(@submarine)
-            expect(@player1.ships.length). to eq(2)
+        it 'places a ship randomly in a valid location' do
+
+        player = Player.new("computer")
+        player.computer_player
+        ship = Ship.new("submarine", 2)
+
+        player.place_ship_randomly(ship)
+
+        expect(player.ships).to include(ship)
+        end
+    end
+
+    describe '#prompt_for_coordinates' do
+
+        it 'recognizes invalid input and re-prompts the user for a valid input' do
+        player = Player.new("player")
+        allow(player).to receive(:gets).and_return("Z1", "A1")
+
+        expect(player).to receive(:gets).twice
+        coordinate = player.prompt_for_coordinates
+        expect(coordinate).to eq("A1")
         end
     end
 
@@ -85,59 +130,6 @@ RSpec.describe Player do
 
             expect(player.all_ships_sunk?).to be true
 
-        end
-    end
-
-    describe '#prompt_for_coordinates' do
-
-        it 'recognizes invalid input and re-prompts the user for a valid input' do
-        player = Player.new("player")
-        allow(player).to receive(:gets).and_return("Z1", "A1")
-
-        expect(player).to receive(:gets).twice
-        coordinate = player.prompt_for_coordinates
-        expect(coordinate).to eq("A1")
-        end
-    end
-
-    describe '#place_ship_randomly' do
-
-        it 'places a ship randomly in a valid location' do
-
-        player = Player.new("computer")
-        player.computer_player
-        ship = Ship.new("submarine", 2)
-
-        player.place_ship_randomly(ship)
-
-        expect(player.ships).to include(ship)
-        end
-    end
-
-    describe '#place_ship' do
-
-        it 'can place ships manually for human' do
-            player = Player.new("player")
-            ship = Ship.new("Cruiser", 3)
-
-            allow(player).to receive(:gets).and_return("A1 A2 A3")
-            player.place_ship([ship])
-
-            expect(player.ships).to include(ship)
-            expect(player.board.cells["A1"].ship).to eq(ship)
-            expect(player.board.cells["A2"].ship).to eq(ship)
-            expect(player.board.cells["A3"].ship).to eq(ship)
-        end
-
-        it 'places ships randomly for computer' do
-            player = Player.new("computer")
-            player.computer_player
-            ship = Ship.new("Submarine", 2)
-        
-            player.place_ship([ship])
-        
-            expect(player.ships).to include(ship)
-            expect(player.board.cells).to have_key(player.board.random_coordinates)
         end
     end
 
