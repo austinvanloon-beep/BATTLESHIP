@@ -21,9 +21,9 @@ class Player
         end
     end
 
-    # do we need to add @ships << ship to the computers ship placement method too?
     def place_ship_randomly(ship)
         placed = false
+
         until placed
             coordinates = generate_valid_random_coordinates(ship.length)
             if board.valid_placement?(ship, coordinates)
@@ -31,6 +31,8 @@ class Player
                 placed = true
             end
         end
+
+        @ships << ship
     end
 
     # do we still need this one now that we have specified the human and player ship placement?    
@@ -54,6 +56,11 @@ class Player
         user_input
     end
       
+    def fire_prompt(opponents_board)
+        coordinate = prompt_for_coordinates
+        opponents_board.cells[coordinate].fire_upon(coordinate)
+    end
+
     def generate_valid_random_coordinates(length)
 
         valid_coordinates = []
@@ -64,6 +71,11 @@ class Player
         end
 
         valid_coordinates
+    end
+
+    def fire_randomly(opponents_board)
+        coordinate = opponents_board.cells.keys.sample
+        opponents_board.cells[coordinate].fire_upon(coordinate)
     end
 
     def take_turn(opponents_board)
