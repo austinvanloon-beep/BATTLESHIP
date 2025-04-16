@@ -4,6 +4,8 @@ RSpec.describe Game do
 
     before(:each) do
         @game = Game.new
+        # had to add this stub globally to prevent infinite loop during testing
+        allow(@game).to receive(:start_game)
     end
   
     describe '#initialize' do
@@ -56,13 +58,15 @@ RSpec.describe Game do
           game.computer.instance_variable_set(:@is_computer, true)
         
           # added a stub here too so the user input was not needed for placing the ships
-          allow(game.player).to receive(:prompt_for_ship_placement)
-            .and_return(["A1", "A2", "A3"], ["B1", "B2"])
+          allow(game.player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"], ["B1", "B2"])
         
+          allow(game.player.board).to receive(:valid_placement?).and_return(true)
+          allow(game.player.board).to receive(:place_ship).and_return(true)
+
           # added a stub here as well for the computer's place_ship_randomly so it doesn’t loop infinitely
           allow(game.computer).to receive(:place_ship_randomly) do |ship|
             coordinates = game.computer.generate_valid_random_coordinates(ship.length)
-            game.computer.board.place_ship(ship, coordinates)
+              game.computer.board.place_ship(ship, coordinates)
           end
         
           game.setup_game

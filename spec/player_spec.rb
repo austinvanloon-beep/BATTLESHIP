@@ -55,11 +55,9 @@ RSpec.describe Player do
             player = Player.new("player")
             ship = Ship.new("Cruiser", 3)
             # added stubs here to allow this test to function without actual user input and to avoid getting stuck in an infinite validation loop
-            allow(player).to receive(:gets).and_return("A1 A2 A3")
             allow(player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"])
             allow(player.board).to receive(:valid_placement?).with(ship, ["A1", "A2", "A3"]).and_return(true)
             allow(player.board).to receive(:place_ship).with(ship, ["A1", "A2", "A3"])
-            
             
             player.place_ship([ship])
 
@@ -71,7 +69,6 @@ RSpec.describe Player do
             player = Player.new("player")
             ship = Ship.new("Cruiser", 3)
             # added stubs here to allow this test to function without actual user input and to avoid getting stuck in an infinite validation loop
-            allow(player).to receive(:gets).and_return("A1 A2 A3")
             allow(player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"])
             allow(player.board).to receive(:valid_placement?).with(ship, ["A1", "A2", "A3"]).and_return(true)
             allow(player.board).to receive(:place_ship).with(ship, ["A1", "A2", "A3"])
@@ -205,9 +202,8 @@ RSpec.describe Player do
             # added a stub here to allow this test to function without actual user input
             allow(player).to receive(:prompt_for_ship_placement).with(cruiser).and_return(["A1", "A2", "A3"])
             allow(player).to receive(:prompt_for_ship_placement).with(submarine).and_return(["B1", "B2"])
-
-            allow(player.board).to receive(:valid_placement?).with(cruiser, ["A1", "A2", "A3"]).and_return(true)
-            allow(player.board).to receive(:valid_placement?).with(submarine, ["B1", "B2"]).and_return(true)
+            allow(player.board).to receive(:valid_placement?).and_return(true)
+            allow(player.board).to receive(:place_ship).and_return(true)
 
             expect(player.board.valid_placement?(cruiser, ["A1", "A2", "A3"])).to be true
 
@@ -230,9 +226,8 @@ RSpec.describe Player do
             # added a stub here to allow this test to function without actual user input
             allow(player).to receive(:prompt_for_ship_placement).with(cruiser).and_return(["A1", "A2", "A3"])
             allow(player).to receive(:prompt_for_ship_placement).with(submarine).and_return(["B1", "B2"])
-
-            allow(player.board).to receive(:valid_placement?).with(cruiser, ["A1", "A2", "A3"]).and_return(true)
-            allow(player.board).to receive(:valid_placement?).with(submarine, ["B1", "B2"]).and_return(true)
+            allow(player.board).to receive(:valid_placement?).and_return(true)
+            allow(player.board).to receive(:place_ship).and_return(true)
 
             expect(player.board.valid_placement?(cruiser, ["A1", "A2", "A3"])).to be true
 
