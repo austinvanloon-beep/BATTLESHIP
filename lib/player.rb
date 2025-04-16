@@ -26,11 +26,19 @@ class Player
           if @is_computer
             place_ship_randomly(ship)
           else
-            coordinates = prompt_for_ship_placement(ship)
-            @board.place_ship(ship, coordinates)
+            placed = false
+            
+            until placed
+              coordinates = prompt_for_ship_placement(ship)
+              if @board.valid_placement?(ship, coordinates)
+                @board.place(ship, coordinates)
+                @ships << ship
+                placed = true
+              else
+                puts "Invalid placement. Please enter a valid set of coordinates."
+              end
+            end
           end
-
-          @ships << ship
         end
     end
       
