@@ -20,8 +20,6 @@ class Cell
     @fired_upon
   end
 
-  # future refactor note, the interaction pattern indicataed to be able to pass a cell argument into this method
-  # but I think we can simplify to `fire_upon` without needing an argument and let the object manage its own state instead?
   def fire_upon
     # added this to prevent double damage being possible
     return if @fired_upon
