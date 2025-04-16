@@ -8,20 +8,12 @@ class Ship
       @health = length
   end
 
-  # refactor note I think we could write this without all the explicit
-  # conditional stuff and just say @health == 0 which would by definition
-  # already be a boolean true/false when evaluating that question
   def sunk?
-      if @health == 0
-          return true
-      else false
-      end
+    @health == 0
   end
 
-  # refactor note do we need to account for guessing the same
-  # cell multiple times and possibly going negative health?
   def hit
-      @health -= 1
+    @health -= 1 unless @health == 0
   end
 
 
