@@ -131,7 +131,7 @@ RSpec.describe Player do
             expect(player.board.cells.values.map(&:ship).compact).to include(ship)
         end
 
-        xit 'adds ships to the player ship list' do
+        xit 'adds ships to the computer ship list' do
             player = Player.new("player")
             ship = Ship.new("Cruiser", 3)
             # added a stub here to allow this test to function without actual user input
@@ -209,11 +209,8 @@ RSpec.describe Player do
 
             player.place_ship([cruiser, submarine])
 
-            # 3.times { cruiser.hit }
-            cruiser.hit
-            cruiser.hit
-            cruiser.hit
-
+            3.times { cruiser.hit }
+           
             expect(cruiser.sunk?).to be(true)
             expect(player.all_ships_sunk?).to eq(false)
         end
@@ -233,13 +230,8 @@ RSpec.describe Player do
 
             player.place_ship([cruiser, submarine])
             
-            # 3.times { cruiser.hit }
-            cruiser.hit
-            cruiser.hit
-            cruiser.hit
-            # 2.times { cruiser.hit }
-            submarine.hit
-            submarine.hit
+            3.times { cruiser.hit }
+            2.times { submarine.hit }
 
             expect(player.all_ships_sunk?).to be true
         end

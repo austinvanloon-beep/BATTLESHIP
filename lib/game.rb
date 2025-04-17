@@ -99,6 +99,8 @@ class Game
   end
 
   def play_turns
+    puts "Let the battle begin!"
+
     until @player.all_ships_sunk? == true || @computer.all_ships_sunk? == true
       display_boards
       
@@ -124,7 +126,7 @@ class Game
   end
 
   def play_again?
-    puts "Would you like to play again? (y/n)"
+    puts "Would you like to play again? ('y' or 'n')"
     user_input = gets.chomp.strip.downcase
   
     if user_input == 'y'

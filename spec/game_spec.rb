@@ -91,23 +91,17 @@ RSpec.describe Game do
           @player2 = Player.new("player")
           @player1.computer_player
 
-          # expected_render = 
-          # "=============COMPUTER BOARD============="
-          # @player1.board.render
-          # "==============PLAYER BOARD=============="
-          # @player2.board.render(true)
+          expected_render = 
+          "=============COMPUTER BOARD============="
+          @player1.board.render
+          "==============PLAYER BOARD=============="
+          @player2.board.render(true)
 
           # not testing terminal output but confirmed board rendering is working
           expect(@game.display_boards).to output(expected_render)
         end
     end  
-  
-  
-          # not sure if we need to test for this or not, but I thought I would leave a note either way
-          # but the use-case where the player would have no ships afloat at the beginning of the turn/start of the game 
-          # (i.e., not an empty array, but ships with 0 health), did arise in testing and I had to force quit the terminal
-          # so I added `until @player.all_ships_sunk? == true || @computer.all_ships_sunk? == true` to the method as a safeguard
-  
+    
     describe '#end_game' do
 
         before(:each) do
@@ -159,7 +153,7 @@ RSpec.describe Game do
           expect(@game.end_game).to output("\nI won!\n")
         end
       
-        xit 'returns to main menu after game ends' do
+        it 'returns to main menu after game ends' do
           # nifty refactor to have the ships iterate upon themselves to hit the number of times their health (length) is!
           @game.player.ships.each do |ship| 
             ship.length.times do 

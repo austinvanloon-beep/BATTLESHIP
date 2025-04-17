@@ -30,15 +30,13 @@ class Player
       
             until placed
               coordinates = prompt_for_ship_placement(ship)
-              puts "DEBUG: You entered #{coordinates.inspect}"
-      
+                    
               if @board.valid_placement?(ship, coordinates)
-                puts "DEBUG: Valid placement confirmed for #{coordinates}"
                 @board.place_ship(ship, coordinates)
                 @ships << ship
                 placed = true
               else
-                puts "DEBUG: Invalid placement: #{coordinates}. Trying again..."
+                puts "Invalid placement: #{coordinates}. Please try again"
               end
             end
           end
@@ -93,7 +91,7 @@ class Player
 
     def place_ship_randomly(ship)
         attempts = 0
-        max_attempts = 5
+        max_attempts = 100
       
         until attempts >= max_attempts
           coordinates = generate_valid_random_coordinates(ship.length)
@@ -137,7 +135,7 @@ class Player
     end
 
     def all_ships_sunk?
-        
+        return false if @ships.empty?
         @ships.all? {|ship| ship.sunk?}
     end
 
