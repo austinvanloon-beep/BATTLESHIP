@@ -120,7 +120,20 @@ class Game
     end
 
     puts "\nReturning to main menu...\n\n"
-    start_game
+    play_again?
   end
 
+  def play_again?
+    puts "Would you like to play again? (y/n)"
+    user_input = gets.chomp.strip.downcase
+  
+    if user_input == 'y'
+      game = Game.new
+      game.start_game
+    else
+      puts "Thanks for playing! Goodbye!"
+      quit_game
+    end
+  end
+  
 end
