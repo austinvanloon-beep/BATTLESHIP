@@ -21,8 +21,11 @@ class Cell
   end
 
   def fire_upon
-    # added this to prevent double damage being possible
-    return if @fired_upon
+    
+    if @fired_upon
+      puts "You've already fired there!"
+      return
+    end
 
     @fired_upon = true
     @ship.hit unless empty?
