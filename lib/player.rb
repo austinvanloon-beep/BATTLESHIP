@@ -20,27 +20,31 @@ class Player
         puts "Enter the coordinates for the #{ship.name} (#{ship.length} spaces):"
         gets.chomp.strip.upcase.split
     end  
-      
+        
     def place_ship(ship_list)
         ship_list.each do |ship|
           if @is_computer
             place_ship_randomly(ship)
           else
             placed = false
-            
+      
             until placed
               coordinates = prompt_for_ship_placement(ship)
+              puts "DEBUG: You entered #{coordinates.inspect}"
+      
               if @board.valid_placement?(ship, coordinates)
+                puts "DEBUG: Valid placement confirmed for #{coordinates}"
                 @board.place_ship(ship, coordinates)
                 @ships << ship
                 placed = true
               else
-                puts "Invalid placement. Please enter a valid set of coordinates."
+                puts "DEBUG: Invalid placement: #{coordinates}. Trying again..."
               end
             end
           end
         end
-    end
+      end
+      
       
     def prompt_for_coordinates(opponents_board)
         puts "Enter a coordinate to fire on:"
@@ -79,17 +83,21 @@ class Player
     end
 
     def place_ship_randomly(ship)
-        placed = false
-
-        until placed
-            coordinates = generate_valid_random_coordinates(ship.length)
-            if board.valid_placement?(ship, coordinates)
-                board.place_ship(ship, coordinates)
-                placed = true
-                @ships << ship
-            end            
+        attempts = 0
+        max_attempts = 5
+      
+        until attempts >= max_attempts
+          coordinates = generate_valid_random_coordinates(ship.length)
+          if board.valid_placement?(ship, coordinates)
+            board.place_ship(ship, coordinates)
+            @ships << ship
+            return
+          end
+          attempts += 1
         end
-    end
+      
+        puts "DEBUG: Could not place ship #{ship.name} after #{max_attempts} attempts."
+    end      
       
     def fire_randomly(opponents_board)
         loop do
