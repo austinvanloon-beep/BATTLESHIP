@@ -61,8 +61,10 @@ class Board
         else
             return false 
         end
-        return false if coordinates.any? { |coordinate| @cells[coordinate].empty? == false }
-
+        
+        return false if coordinates.any? { |coordinate| !@cells[coordinate]&.empty? }
+        
+        true
     end
 
     
