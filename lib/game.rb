@@ -3,16 +3,16 @@ class Game
   attr_reader :player, :computer
 
   def initialize
-   @player = Player.new("player")
-   @computer = Player.new("computer")
-   @computer.computer_player
+    @player = Player.new("player")
+    @computer = Player.new("computer")
+    @computer.computer_player
   end
 
   def welcome_message
     "Welcome to BATTLESHIP\n" +
     "Enter 'p' to play. Enter 'q' to quit."
   end
-  
+
   def start_game
     puts welcome_message
     user_input = gets.chomp.downcase
@@ -28,7 +28,6 @@ class Game
       puts "Invalid input. Please try again."
       start_game
     end
-
   end
 
   def quit_game
@@ -37,29 +36,28 @@ class Game
   end
 
   def setup_game
-
     # add sassy personality flair here for computer maybe?
     ship_options = {
       "1" => { name: "Cruiser", length: 3 },
       "2" => { name: "Submarine", length: 2 }
     }
-    
+
     puts "Choose the ships you'll play with:\n\n"
-    
+
     ship_options.each do |key, ship_info|
       puts "#{key}. #{ship_info[:name]} (#{ship_info[:length]} spaces)"
     end
 
     puts "\nHow many ships would you like to use?"
-    
+
     max_ships = ship_options.length
     ship_count = nil
 
     loop do
       print "Enter a number (1 to #{max_ships}): "
-      input = gets.chomp.to_i
-      if input.between?(1, max_ships)
-        ship_count = input
+      user_input = gets.chomp.to_i
+      if user_input.between?(1, max_ships)
+        ship_count = user_input
         break
       else
         puts "Invalid number. Please choose a number between 1 and #{max_ships}."
@@ -67,27 +65,29 @@ class Game
     end
 
     chosen_ships = []
-  
+
     ship_count.times do |i|
       print "Enter the number for Ship #{i + 1}: "
-      input = gets.chomp
-      ship_info = ship_options[input]
-      
+      user_input = gets.chomp
+      ship_info = ship_options[user_input]
+
       if ship_info
         chosen_ships << Ship.new(ship_info[:name], ship_info[:length])
       else
         puts "Invalid input. Please try again."
         redo
       end
-  
-    puts "\nGreat! For this game, you and the computer will both use:"
-      chosen_ships.each { |s| puts "- #{s.name} (#{s.length})" }
+
+      puts "\nGreat! For this game, you and the computer will both use:"
+      chosen_ships.each do |ship|
+        puts "- #{ship.name} (#{ship.length})"
+      end
     end
-    
+
     # add personality flair here
     @computer.place_ship(chosen_ships)
     puts "\nI have placed my ships randomly on the board. Now it's your turn."
-    
+
     @player.place_ship(chosen_ships)
   end
 
@@ -113,11 +113,9 @@ class Game
     elsif @computer.all_ships_sunk? == true
       puts "\nI won!\n"
     end
-  
-  puts "\nReturning to main menu...\n\n"
-  start_game
-  
-  end
 
+    puts "\nReturning to main menu...\n\n"
+    start_game
+  end
 
 end

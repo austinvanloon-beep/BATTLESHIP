@@ -31,7 +31,7 @@ class Player
             until placed
               coordinates = prompt_for_ship_placement(ship)
               if @board.valid_placement?(ship, coordinates)
-                @board.place(ship, coordinates)
+                @board.place_ship(ship, coordinates)
                 @ships << ship
                 placed = true
               else
@@ -60,7 +60,7 @@ class Player
         loop do 
             coordinate = prompt_for_coordinates(opponents_board)
             unless opponents_board.cells[coordinate].fired_upon?
-                opponents_board.cells[coordinate].fire_upon(coordinate)
+                opponents_board.cells[coordinate].fire_upon
                 break
             end
         end
@@ -95,7 +95,7 @@ class Player
         loop do
             coordinate = opponents_board.cells.keys.sample
             unless opponents_board.cells[coordinate].fired_upon?
-                opponents_board.cells[coordinate].fire_upon(coordinate)
+                opponents_board.cells[coordinate].fire_upon
                 break
             end
         end

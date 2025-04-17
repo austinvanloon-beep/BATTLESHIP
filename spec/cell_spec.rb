@@ -73,7 +73,7 @@ RSpec.describe Cell do
       @cruiser = Ship.new("Cruiser", 3)
     end
 
-    it 'returns ”.” if the cell has not been fired upon and does not contain a ship' do
+    it 'returns "." if the cell has not been fired upon and does not contain a ship' do
       expect(@cell_1.render).to eq(".")
     end
 
