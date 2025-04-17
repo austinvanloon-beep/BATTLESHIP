@@ -43,7 +43,7 @@ class Player
             end
           end
         end
-      end
+    end
       
       
     def prompt_for_coordinates(opponents_board)
@@ -62,11 +62,20 @@ class Player
 
     def fire_prompt(opponents_board)
         loop do 
-            coordinate = prompt_for_coordinates(opponents_board)
-            unless opponents_board.cells[coordinate].fired_upon?
-                opponents_board.cells[coordinate].fire_upon
-                break
+          coordinate = prompt_for_coordinates(opponents_board)
+          cell = opponents_board.cells[coordinate]
+      
+          unless cell.fired_upon?
+            cell.fire_upon
+            if cell.ship && cell.ship.sunk?
+              puts "You sunk a ship at #{coordinate}!"
+            elsif cell.ship
+              puts "You hit a ship at #{coordinate}!"
+            else
+              puts "You missed at #{coordinate}."
             end
+            break
+          end
         end
     end
 
@@ -101,11 +110,20 @@ class Player
       
     def fire_randomly(opponents_board)
         loop do
-            coordinate = opponents_board.cells.keys.sample
-            unless opponents_board.cells[coordinate].fired_upon?
-                opponents_board.cells[coordinate].fire_upon
-                break
+          coordinate = opponents_board.cells.keys.sample
+          cell = opponents_board.cells[coordinate]
+      
+          unless cell.fired_upon?
+            cell.fire_upon
+            if cell.ship && cell.ship.sunk?
+              puts "The computer sunk one of your ships at #{coordinate}!"
+            elsif cell.ship
+              puts "The computer hit one of your ships at #{coordinate}!"
+            else
+              puts "The computer missed at #{coordinate}."
             end
+            break
+          end
         end
     end
 
