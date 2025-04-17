@@ -101,8 +101,13 @@ class Game
   def play_turns
     until @player.all_ships_sunk? == true || @computer.all_ships_sunk? == true
       display_boards
+      
+      puts "\nYour turn:"
       @player.take_turn(@computer.board)
+
       break if @computer.all_ships_sunk? == true
+
+      puts "\nComputer's turn:"
       @computer.take_turn(@player.board)
     end
   end
