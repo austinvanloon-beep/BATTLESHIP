@@ -23,8 +23,6 @@ class Board
         }
     end
 
-    # future note for us to make sure that since we are not validing placement or coordinates in this method again on the Board class,
-    # we will need to do so somewhere else in the game logic, probably if we make a Player or Game class?
     def place_ship(ship, coordinates)
         coordinates.each do |coordinate|
             @cells[coordinate].place_ship(ship)
@@ -61,7 +59,7 @@ class Board
         else
             return false 
         end
-        
+
         return false if coordinates.any? { |coordinate| !@cells[coordinate]&.empty? }
         
         true
