@@ -34,6 +34,7 @@ class Game
         "Aye, best stay ashore then. The kraken thanks ye for leavin him be.",
         "Off with ye then. There be some grog waitin elsewhere, I reckon!"
       ]
+
       if pirate_mode?
         puts pirate_goodbyes.sample
       else
@@ -255,6 +256,7 @@ class Game
         "I shall be waitin in the fog for our next skirmish. Until then, bilge rat.",
         "So ye surrender? Smart choice. I be the terror of the tides!"
       ]
+      
       if pirate_mode?
         puts pirate_rematch.sample
       else

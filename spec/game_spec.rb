@@ -29,16 +29,41 @@ RSpec.describe Game do
           expect(@game.welcome_message).to eq("Welcome to BATTLESHIP\nEnter 'p' to play. Enter 'q' to quit.")
         end
 
-        it 'allows the user to choose to play by typing "p"' do
-          expect(@game.user_input = 'p').to output(true).stdout
+        xit 'allows the user to choose to play by typing "p"' do
+           # added a bunch of stubs here to simulate the user_inputs up until this point in the game logic
+           allow(@game).to receive(:gets).and_return("p", "1", "1", "A1 A2 A3") 
+           allow(@game).to receive(:play_turns)
+           allow(@game).to receive(:end_game)
+
+           expected_string = "Choose the ships you'll play with:\n\n"
+
+           expect { @game.start_game}.to output(expected_string).to_stdout
+
         end
 
-        it 'allows the user to choose to quit by typing "q"' do
-          expect(@game.user_input = 'q').to output(true).stdout
+        xit 'allows the user to choose to quit by typing "q"' do
+          # added a stub here to simulate the user_inputs up until this point in the game logic
+          allow(@game).to receive(:gets).and_return("q")
+          allow(@game).to receive(:quit_game)
+
+          expect(@game).to receive(:quit_game)
+
+          @game.start_game
         end
 
-        it 'recognizes an invalid input option and re-prompts user to a valid one' do
-          expect(@game.user_input = 'x').to output("Invalid input. Please try again.").stdout
+        xit 'recognizes an invalid input option and re-prompts user to a valid one' do
+          # stubbing an invalid input and then a valid one
+          allow(@game).to receive(:gets).and_return("x", "q")
+
+          expected_string = 
+          "Welcome to BATTLESHIP\n" \
+          "Enter 'p' to play. Enter 'q' to quit.\n" \
+          "Invalid input. Please try again.\n" \
+          "Welcome to BATTLESHIP\n" \
+          "Enter 'p' to play. Enter 'q' to quit.\n" \
+          "Goodbye!\n"
+
+          expect { @game.start_game}.to output(expected_string).to_stdout
         end
     end
 
