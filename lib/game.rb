@@ -10,7 +10,7 @@ class Game
   end
 
   def welcome_message
-    if @pirate_mode
+    if pirate_mode?
       "Welcome aboard ye scallywag!\n" +
       "Type 'p' to set sail or 'q' to walk the plank!"
     else
@@ -34,14 +34,19 @@ class Game
         "Aye, best stay ashore then. The kraken thanks ye for leavin him be.",
         "Off with ye then. There be some grog waitin elsewhere, I reckon!"
       ]
-      if @pirate_mode
+      if pirate_mode?
         puts pirate_goodbyes.sample
       else
         puts "Goodbye!"
       end
       quit_game
     else
-      puts "Invalid input. Please try again."
+      if pirate_mode?
+        puts "That be nonsense, matey! Try again with 'p' or 'q', savvy?"
+      else
+        puts "Invalid input. Please try again."
+      end
+      
       start_game
     end
   end
@@ -57,37 +62,48 @@ class Game
       "9" => { name: "Black Pearl", length: 4, hidden: true }
     }
 
-    if pirate_mode
+    if pirate_mode?
       puts "Choose yer vessels, ye salty dog:\n\n"
     else
       puts "Choose the ships you'll play with:\n\n"
     end
 
     ship_options.each do |key, ship_info|
-      ship_name = @pirate_mode ? pirate_ship_name(ship_info[:name]) : ship_info[:name]
-      puts "#{key}. #{ship_name} (#{ship_info[:length]} spaces)"
-    end
+      next if ship_info[:hidden] && !pirate_mode?
 
-    if @pirate_mode
+      if pirate_mode?
+        ship_name = pirate_ship_name(ship_info[:name])
+      else
+        ship_name = ship_info[:name]
+      end
+
+      puts "#{key}. #{ship_name} (#{ship_info[:length]} spaces)"
+    end    
+
+    if pirate_mode?
       puts "\nHow many ships be joinin' yer fleet?"
     else
       puts "\nHow many ships would you like to use?"
     end
 
-    max_ships = ship_options.length
+    visible_ship_count = 0
+
+    ship_options.each do |key, ship_info|
+      visible_ship_count += 1 unless ship_info[:hidden]
+    end
     ship_count = nil
 
     loop do
-      print "Enter a number (1 to #{max_ships}): "
+      print "Enter a number (1 to #{visible_ship_count}): "
       user_input = gets.chomp.to_i
-      if user_input.between?(1, max_ships)
+      if user_input.between?(1, visible_ship_count)
         ship_count = user_input
         break
       else
-        if pirate_mode
-          puts "That number ain't seaworthy! Pick between 1 and #{max_ships}, matey!"
+        if pirate_mode?
+          puts "That number ain't seaworthy! Pick between 1 and #{visible_ship_count}, matey!"
         else
-          puts "Invalid number. Please choose a number between 1 and #{max_ships}."
+          puts "Invalid number. Please choose a number between 1 and #{visible_ship_count}."
         end
       end
     end
@@ -102,7 +118,6 @@ class Game
       if user_input.downcase == "9"
         @pirate_mode = true
         puts "Avast! Ye've summoned the Black Pearl. Prepare for a cursed voyage! Ahahahaaaa"
-        chosen_ships << Ship.new("Black Pearl", 4)
         
         next
       end
@@ -110,7 +125,7 @@ class Game
       if ship_info
         chosen_ships << Ship.new(ship_info[:name], ship_info[:length])
       else
-        if @pirate_mode
+        if pirate_mode?
           puts "Arrr, that ain't a proper command. Try again!"
         else
           puts "Invalid input. Please try again."
@@ -119,15 +134,25 @@ class Game
         redo
       end
 
-      puts "\nGreat! For this game, you and the computer will both use:"
+      if pirate_mode?
+        puts "\nA fine fleet ye've chosen! The seas be awaitin':"
+      else
+        puts "\nGreat! For this game, you and the computer will both use:"
+      end
+      
       chosen_ships.each do |ship|
         puts "- #{ship.name} (#{ship.length})"
       end
     end
 
+    if pirate_mode?
+      black_pearl = Ship.new("Black Pearl", 4)
+      @computer.place_ship([black_pearl])
+    end
+
     @computer.place_ship(chosen_ships)
     
-    if @pirate_mode
+    if pirate_mode?
       puts "\nI've hidden me fleet across the briny deep. Yer move, landlubber!"
     else
       puts "\nI have placed my ships randomly on the board. Now it's your turn."
@@ -150,8 +175,8 @@ class Game
       "Prepare to board and bring the broadside!",
       "A storm brews — time to unleash the cannons!"
     ]
-    
-    if pirate_mode
+
+    if pirate_mode?
       puts pirate_turns.sample
     else
       puts "Let the battle begin!"
@@ -160,7 +185,7 @@ class Game
     until @player.all_ships_sunk? == true || @computer.all_ships_sunk? == true
       display_boards
       
-      if pirate_mode
+      if pirate_mode?
         puts "\nYer turn, swabbie:"
       else
         puts "\nYour turn:"
@@ -170,7 +195,7 @@ class Game
 
     break if @computer.all_ships_sunk? == true
 
-      if pirate_mode
+      if pirate_mode?
         puts "\nMe turn, prepare to be plundered!"
       else
         puts "\nComputer's turn:"
@@ -181,16 +206,16 @@ class Game
   end
 
   def end_game
-    if @pirate_mode
-      if @player.all_ships_sunk?
-        puts "\nYe fought well, but I sent yer fleet to the briny deep! I win, ye scurvy dog!"
-      elsif @computer.all_ships_sunk?
+    if pirate_mode?
+      if @computer.all_ships_sunk?
         puts "\nCURSES!! Ye bested me and me crew. Surely yer name echoes through the ports now!"
+      elsif @player.all_ships_sunk?
+        puts "\nYe fought well, but I sent yer fleet to the briny deep! I win, ye scurvy dog!"
       end
     else
-      if @player.all_ships_sunk? == true
+      if @computer.all_ships_sunk?
         puts "\nYou won!\n"
-      elsif @computer.all_ships_sunk? == true
+      elsif  @player.all_ships_sunk?
         puts "\nI won!\n"
       end
     end
@@ -202,7 +227,7 @@ class Game
       "\nThe cannon smoke clears... returnin to safe harbors.\n\n"
     ]
 
-    if pirate_mode
+    if pirate_mode?
       puts pirate_play_agains.sample
     else
       puts "\nReturning to main menu...\n\n"
@@ -212,7 +237,7 @@ class Game
   end
 
   def play_again?
-    if @pirate_mode
+    if pirate_mode?
       puts "Wanna tempt fate again, ye sea dog? ('y' for aye, 'n' for nay)"
     else
       puts "Would you like to play again? ('y' or 'n')"
@@ -230,7 +255,7 @@ class Game
         "I shall be waitin in the fog for our next skirmish. Until then, bilge rat.",
         "So ye surrender? Smart choice. I be the terror of the tides!"
       ]
-      if @pirate_mode
+      if pirate_mode?
         puts pirate_rematch.sample
       else
         puts "Thanks for playing! Goodbye!"
@@ -239,7 +264,7 @@ class Game
     end
   end
 
-  def pirate_mode
+  def pirate_mode?
     @pirate_mode == true
   end
 
