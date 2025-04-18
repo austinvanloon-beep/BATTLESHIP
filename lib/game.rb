@@ -110,6 +110,7 @@ class Game
     end
 
     chosen_ships = []
+    black_pearl_chosen = false
 
     ship_count.times do |i|
       print "Enter the number for Ship #{i + 1}: "
@@ -118,6 +119,7 @@ class Game
 
       if user_input.downcase == "9"
         @pirate_mode = true
+        black_pearl_chosen = true
         puts "Avast! Ye've summoned the Black Pearl. Prepare for a cursed voyage! Ahahahaaaa"
         
         next
@@ -146,9 +148,19 @@ class Game
       end
     end
 
-    if pirate_mode?
+    if pirate_mode? && black_pearl_chosen
       black_pearl = Ship.new("Black Pearl", 4)
-      @computer.place_ship([black_pearl])
+      success = false
+      100.times do
+        coordinates = @computer.generate_valid_random_coordinates(black_pearl.length)
+        if @computer.board.valid_placement?(black_pearl, coordinates)
+          @computer.board.place_ship(black_pearl, coordinates)
+          @computer.ships << black_pearl
+          success = true
+          break
+        end
+      end
+      puts "DEBUG: Could not place ship Black Pearl after 100 attempts." unless success
     end
 
     @computer.place_ship(chosen_ships)
