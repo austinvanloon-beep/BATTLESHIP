@@ -36,7 +36,7 @@ class Player
                 @ships << ship
                 placed = true
               else
-                puts "Invalid placement: #{coordinates}. Please try again"
+                puts "Invalid placement: #{coordinates}. Please try again."
               end
             end
           end
@@ -53,7 +53,7 @@ class Player
             if opponents_board.valid_coordinate?(user_input)
                 return user_input
             else
-                puts "Invalid coordinate. Try again:"
+                puts "Invalid coordinate. Please try again."
             end
         end
     end

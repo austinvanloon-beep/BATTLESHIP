@@ -6,6 +6,7 @@ class Game
     @player = Player.new("player")
     @computer = Player.new("computer")
     @computer.computer_player
+    @pirate_mode = false
   end
 
   def welcome_message
@@ -36,10 +37,10 @@ class Game
   end
 
   def setup_game
-    # add sassy personality flair here for computer maybe?
     ship_options = {
       "1" => { name: "Cruiser", length: 3 },
-      "2" => { name: "Submarine", length: 2 }
+      "2" => { name: "Submarine", length: 2 },
+      "9" => { name: "Black Pearl", length: 4, hidden: true }
     }
 
     puts "Choose the ships you'll play with:\n\n"
@@ -68,8 +69,15 @@ class Game
 
     ship_count.times do |i|
       print "Enter the number for Ship #{i + 1}: "
-      user_input = gets.chomp
+      user_input = gets.chomp.strip
       ship_info = ship_options[user_input]
+
+      if user_input.downcase == "9"
+        @pirate_mode = true
+        puts "Avast! Ye've summoned the Black Pearl. Prepare for a cursed voyage! Ahahahaaaa"
+        chosen_ships << Ship.new("Black Pearl", 4)
+        next
+      end
 
       if ship_info
         chosen_ships << Ship.new(ship_info[:name], ship_info[:length])
@@ -84,7 +92,6 @@ class Game
       end
     end
 
-    # add personality flair here
     @computer.place_ship(chosen_ships)
     puts "\nI have placed my ships randomly on the board. Now it's your turn."
 
