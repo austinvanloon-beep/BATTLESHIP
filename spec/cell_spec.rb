@@ -107,12 +107,10 @@ RSpec.describe Cell do
 
     it 'returns "X" if the cell has been fired upon and its ship has sunk' do
       @cell_2.place_ship(@cruiser)
-      @cell_2.fire_upon
-      
       3.times {@cruiser.hit}
+      @cell_2.fire_upon
 
-      @cruiser.sunk?
-      
+      expect(@cruiser.sunk?).to eq(true)
       expect(@cell_2.render).to eq("X")
     end
 

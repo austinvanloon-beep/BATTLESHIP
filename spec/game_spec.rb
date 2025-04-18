@@ -29,18 +29,16 @@ RSpec.describe Game do
           expect(@game.welcome_message).to eq("Welcome to BATTLESHIP\nEnter 'p' to play. Enter 'q' to quit.")
         end
 
-        # refactor notes - commenting these out for now because we don't have to test the user inputs,
-        # but f there's time left, this could be something to try mocks and stubs with to create a fake input/method
         it 'allows the user to choose to play by typing "p"' do
-          # expect(@game.user_input = 'p').to eq(true)
+          expect(@game.user_input = 'p').to output(true).stdout
         end
 
         it 'allows the user to choose to quit by typing "q"' do
-          # expect(@game.user_input = 'q').to eq(true)
+          expect(@game.user_input = 'q').to output(true).stdout
         end
 
         it 'recognizes an invalid input option and re-prompts user to a valid one' do
-          # expect(@game.user_input = 'x').to eq("Invalid input. Please try again.")
+          expect(@game.user_input = 'x').to output("Invalid input. Please try again.").stdout
         end
     end
 
@@ -48,13 +46,12 @@ RSpec.describe Game do
 
         it 'prompts both players to place ships' do
           game = Game.new
-          # added a few stubs here to fake the user input for all of the initial game setup options:
+          # added a few stubs here to fake the user input for all of the initial game setup options like this
           # number of ships (2); pick "1" for Cruiser (1); pick "2" for Submarine (2), 
           # and since the `redo` could make it ask for that same ship again, add in other stubs to prevent that
           allow(game).to receive(:gets).and_return("2", "1", "2", "1", "2")
 
-        
-          # Force computer player to behave correctly
+          # Force computer player to behave correctly like a computer for testing purposes
           game.computer.instance_variable_set(:@is_computer, true)
         
           # added a stub here too so the user input was not needed for placing the ships
@@ -82,7 +79,7 @@ RSpec.describe Game do
 
     describe '#display_boards' do
 
-        xit 'renders the boards for player and computer correctly' do
+        it 'renders the boards for player and computer correctly' do
           @cruiser = Ship.new("Cruiser", 3)
           @submarine = Ship.new("Submarine", 2)
           @ships = [@cruiser, @submarine]
@@ -91,23 +88,16 @@ RSpec.describe Game do
           @player2 = Player.new("player")
           @player1.computer_player
 
-          # expected_render = 
-          # "=============COMPUTER BOARD============="
-          # @player1.board.render
-          # "==============PLAYER BOARD=============="
-          # @player2.board.render(true)
+          expected_render = 
+            "=============COMPUTER BOARD=============\n" +
+            "#{@player1.board.render}" +
+            "==============PLAYER BOARD==============\n" +
+            "#{@player2.board.render(true)}"
 
-          # not testing terminal output but confirmed board rendering is working
-          expect(@game.display_boards).to output(expected_render)
+            expect{ @game.display_boards }.to output(expected_render).to_stdout
         end
     end  
-  
-  
-          # not sure if we need to test for this or not, but I thought I would leave a note either way
-          # but the use-case where the player would have no ships afloat at the beginning of the turn/start of the game 
-          # (i.e., not an empty array, but ships with 0 health), did arise in testing and I had to force quit the terminal
-          # so I added `until @player.all_ships_sunk? == true || @computer.all_ships_sunk? == true` to the method as a safeguard
-  
+    
     describe '#end_game' do
 
         before(:each) do
@@ -130,25 +120,22 @@ RSpec.describe Game do
             @game.player.place_ship(@ships)
             @game.computer.place_ship(@ships)
 
-            # also added a stub to prevent the start_game method from actually running during the test
+            # also added a stub to prevent the play_again or start_game method from actually running during the test
             allow(@game).to receive(:start_game)
+            allow(@game).to receive(:gets).and_return("n")
         end
-
-        ### skipping these tests because we don't have to test the terminal outputs
-        ### but we had the blocks from using TDD still and how we would set them up;
-        ### not sure the expect statements are correctly formatted though, will discuss during evaluation
-        
-        xit 'prints the player win message when the computer ships are all sunk' do
+ 
+        it 'prints the player win message when the computer ships are all sunk' do
           @game.player.ships.each do |ship| 
             ship.length.times do 
                 ship.hit
             end
           end
           expect(@game.computer.all_ships_sunk?).to be true
-          expect(@game.end_game).to output("\nYou won!\n")
+          expect{ @game.end_game }.to output("\nYou won!\n").to_stdout
         end
 
-        xit 'prints the computer win message when the player ships are all sunk' do
+        it 'prints the computer win message when the player ships are all sunk' do
           @game.player.ships.each do |ship| 
               ship.length.times do 
                   ship.hit
@@ -156,10 +143,10 @@ RSpec.describe Game do
           end
       
           expect(@game.player.all_ships_sunk?).to be true
-          expect(@game.end_game).to output("\nI won!\n")
+          expect{ @game.end_game }.to output("\nI won!\n").to_stdout
         end
       
-        xit 'returns to main menu after game ends' do
+        it 'returns to main menu after game ends' do
           # nifty refactor to have the ships iterate upon themselves to hit the number of times their health (length) is!
           @game.player.ships.each do |ship| 
             ship.length.times do 
@@ -167,7 +154,7 @@ RSpec.describe Game do
             end
           end
           
-          expect(@game.end_game).to output("\nReturning to main menu...\n\n")
+          expect(@game.end_game).to output("\nReturning to main menu...\n\n").stdout
         end
     end
 

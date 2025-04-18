@@ -52,6 +52,21 @@ RSpec.describe Board do
             expect(board.valid_placement?(cruiser, ["A3", "A2", "A1"])).to eq(false)
             expect(board.valid_placement?(submarine, ["C1", "B1"])).to eq(false)
         end
+
+        it 'is false if coordinates are diagonal' do
+            board = Board.new
+            cruiser = Ship.new("Cruiser", 3)
+
+            expect(board.valid_placement?(cruiser, ["A1", "B2", "C3"])).to eq(false)
+        end
+
+        it 'is false if coordinates include duplicates' do
+            board = Board.new
+            cruiser = Ship.new("Cruiser", 3)
+
+            expect(board.valid_placement?(cruiser, ["A1", "A1", "A2"])).to eq(false)
+        end
+
     end
 
     describe 'is placing ships' do
@@ -73,6 +88,7 @@ RSpec.describe Board do
             expect(cell_3.ship).to eq(@cruiser)
 
             expect(cell_3.ship == cell_2.ship).to eq(true)
+            expect(@board.cells["A1"].ship).to eq(@cruiser)
         end
 
         it 'is not overlapping ships' do
@@ -85,13 +101,24 @@ RSpec.describe Board do
         end 
     end
 
-    describe 'is rendering board' do
+    describe 'is rendering board correctly based on various game actions and board states' do
        
         before(:each) do
             @board = Board.new
             @cruiser = Ship.new("Cruiser", 3)
         end
-        it 'in a  4x4 grid formation with cells containing ships hidden by default' do
+
+        it 'returns a string from render' do
+            expect(@board.render).to be_a(String)
+        end
+
+        it 'displays correct header and row labels' do
+            render_output = @board.render
+            expect(render_output).to start_with("  1 2 3 4")
+            expect(render_output).to include("A ", "B ", "C ", "D ")
+        end
+
+        it 'is in a  4x4 grid formation with cells containing ships hidden by default' do
             @board.place_ship(@cruiser, ["A1", "A2", "A3"]) 
 
             expect(@board.render).to eq("  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . . \n")
@@ -107,7 +134,7 @@ RSpec.describe Board do
             expect(@board.render).to eq(expected_render)
         end
 
-        it 'and displays "S" for the cells which contain a ship when the optional argument for show_ship is passed' do
+        it 'displays "S" for the cells which contain a ship when the optional argument for show_ship is passed' do
             @board.place_ship(@cruiser, ["A1", "A2", "A3"]) 
 
             expect(@board.render(true)).to eq("  1 2 3 4 \nA S S S . \nB . . . . \nC . . . . \nD . . . . \n")
@@ -122,23 +149,69 @@ RSpec.describe Board do
 
             expect(@board.render(true)).to eq(expected_render)
         end
+
+        it 'renders a board with a missed shot' do
+            @board.cells["B4"].fire_upon
+            
+            expected_render = 
+                "  1 2 3 4 \n" +
+                "A . . . . \n" +
+                "B . . . M \n" +
+                "C . . . . \n" +
+                "D . . . . \n"
+            
+            expect(@board.render).to eq(expected_render)    
+        end
+
+        it 'renders a board with a hit on a ship' do
+            @board.place_ship(@cruiser, ["A1", "A2", "A3"])
+          
+            @board.cells["A1"].fire_upon
+          
+            expected_render = 
+              "  1 2 3 4 \n" +
+              "A H . . . \n" +
+              "B . . . . \n" +
+              "C . . . . \n" +
+              "D . . . . \n"
+          
+            expect(@board.render).to eq(expected_render)
+          end
+
+        it 'renders a board with a sunken ship, a miss, and a hit' do
+            @board.place_ship(@cruiser, ["B1", "C1", "D1"])
+            submarine = Ship.new("Submarine", 2)
+            @board.place_ship(submarine, ["A2", "A3"])
+          
+            # manually sinking the cruiser
+            @board.cells["B1"].fire_upon
+            @board.cells["C1"].fire_upon
+            @board.cells["D1"].fire_upon
+          
+            # manually hitting but not sinking the submarine
+            @board.cells["A2"].fire_upon
+          
+            # fire_upon a different cell with no ships and miss
+            @board.cells["B4"].fire_upon
+          
+            expected_render = 
+              "  1 2 3 4 \n" +
+              "A . H . . \n" +
+              "B X . . M \n" +
+              "C X . . . \n" +
+              "D X . . . \n"
+          
+            expect(@board.render).to eq(expected_render)
+        end
+
+        it 'can correctly render a ship that is hit but not sunk with show_ship == true' do
+            @board.place_ship(@cruiser, ["A1", "A2", "A3"])
+            @board.cells["A1"].fire_upon
+            render_output = @board.render(true)
+            expect(render_output).to include("H S S")
+        end
+
     end
 
 
 end
-
-# As you move forward, you will need to add functionality to your game so that you can fire on Cells and damage their Ships. 
-# When you do this, you should also add new tests for your render method that it can render with Hits, Misses, and Sunken Ships. 
-# A Board in the middle of a game might be rendered as something like this:
-
-#     "  1 2 3 4 \n" +
-#     "A H . . . \n" +
-#     "B . . . M \n" +
-#     "C X . . . \n" +
-#     "D X . . . \n"
-    
-#     "  1 2 3 4 \n" +
-#     "A H S S . \n" +
-#     "B . . . M \n" +
-#     "C X . . . \n" +
-#     "D X . . . \n"
