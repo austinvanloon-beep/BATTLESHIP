@@ -10,8 +10,13 @@ class Game
   end
 
   def welcome_message
-    "Welcome to BATTLESHIP\n" +
-    "Enter 'p' to play. Enter 'q' to quit."
+    if @pirate_mode
+      "Welcome aboard ye scallywag!\n" +
+      "Type 'p' to set sail or 'q' to walk the plank!"
+    else
+      "Welcome to BATTLESHIP\n" +
+      "Enter 'p' to play. Enter 'q' to quit."
+    end
   end
 
   def start_game
@@ -23,7 +28,17 @@ class Game
       play_turns
       end_game
     elsif user_input == 'q'
-      puts "Goodbye!"
+      pirate_goodbyes = [
+        "Fair winds to ye, coward of the coast!",
+        "Turnin tail already? The sea ain't for the faint o' heart.",
+        "Aye, best stay ashore then. The kraken thanks ye for leavin him be.",
+        "Off with ye then. There be some grog waitin elsewhere, I reckon!"
+      ]
+      if @pirate_mode
+        puts pirate_goodbyes.sample
+      else
+        puts "Goodbye!"
+      end
       quit_game
     else
       puts "Invalid input. Please try again."
@@ -32,7 +47,6 @@ class Game
   end
 
   def quit_game
-    # refactor note do i need abort instead? not sure about what at_exit handlers are and if that's just a ruby on rails thing
     exit
   end
 
@@ -43,13 +57,22 @@ class Game
       "9" => { name: "Black Pearl", length: 4, hidden: true }
     }
 
-    puts "Choose the ships you'll play with:\n\n"
-
-    ship_options.each do |key, ship_info|
-      puts "#{key}. #{ship_info[:name]} (#{ship_info[:length]} spaces)"
+    if pirate_mode
+      puts "Choose yer vessels, ye salty dog:\n\n"
+    else
+      puts "Choose the ships you'll play with:\n\n"
     end
 
-    puts "\nHow many ships would you like to use?"
+    ship_options.each do |key, ship_info|
+      ship_name = @pirate_mode ? pirate_ship_name(ship_info[:name]) : ship_info[:name]
+      puts "#{key}. #{ship_name} (#{ship_info[:length]} spaces)"
+    end
+
+    if @pirate_mode
+      puts "\nHow many ships be joinin' yer fleet?"
+    else
+      puts "\nHow many ships would you like to use?"
+    end
 
     max_ships = ship_options.length
     ship_count = nil
@@ -61,7 +84,11 @@ class Game
         ship_count = user_input
         break
       else
-        puts "Invalid number. Please choose a number between 1 and #{max_ships}."
+        if pirate_mode
+          puts "That number ain't seaworthy! Pick between 1 and #{max_ships}, matey!"
+        else
+          puts "Invalid number. Please choose a number between 1 and #{max_ships}."
+        end
       end
     end
 
@@ -76,13 +103,19 @@ class Game
         @pirate_mode = true
         puts "Avast! Ye've summoned the Black Pearl. Prepare for a cursed voyage! Ahahahaaaa"
         chosen_ships << Ship.new("Black Pearl", 4)
+        
         next
       end
 
       if ship_info
         chosen_ships << Ship.new(ship_info[:name], ship_info[:length])
       else
-        puts "Invalid input. Please try again."
+        if @pirate_mode
+          puts "Arrr, that ain't a proper command. Try again!"
+        else
+          puts "Invalid input. Please try again."
+        end
+        
         redo
       end
 
@@ -93,7 +126,12 @@ class Game
     end
 
     @computer.place_ship(chosen_ships)
-    puts "\nI have placed my ships randomly on the board. Now it's your turn."
+    
+    if @pirate_mode
+      puts "\nI've hidden me fleet across the briny deep. Yer move, landlubber!"
+    else
+      puts "\nI have placed my ships randomly on the board. Now it's your turn."
+    end
 
     @player.place_ship(chosen_ships)
   end
@@ -106,43 +144,115 @@ class Game
   end
 
   def play_turns
-    puts "Let the battle begin!"
+    pirate_turns = [
+      "Let the battle begin!",
+      "Raise the anchor, we sail into fire!",
+      "Prepare to board and bring the broadside!",
+      "A storm brews — time to unleash the cannons!"
+    ]
+    
+    if pirate_mode
+      puts pirate_turns.sample
+    else
+      puts "Let the battle begin!"
+    end
 
     until @player.all_ships_sunk? == true || @computer.all_ships_sunk? == true
       display_boards
       
-      puts "\nYour turn:"
+      if pirate_mode
+        puts "\nYer turn, swabbie:"
+      else
+        puts "\nYour turn:"
+      end
+
       @player.take_turn(@computer.board)
 
-      break if @computer.all_ships_sunk? == true
+    break if @computer.all_ships_sunk? == true
 
-      puts "\nComputer's turn:"
+      if pirate_mode
+        puts "\nMe turn, prepare to be plundered!"
+      else
+        puts "\nComputer's turn:"
+      end
+      
       @computer.take_turn(@player.board)
     end
   end
 
   def end_game
-    if @player.all_ships_sunk? == true
-      puts "\nYou won!\n"
-    elsif @computer.all_ships_sunk? == true
-      puts "\nI won!\n"
+    if @pirate_mode
+      if @player.all_ships_sunk?
+        puts "\nYe fought well, but I sent yer fleet to the briny deep! I win, ye scurvy dog!"
+      elsif @computer.all_ships_sunk?
+        puts "\nCURSES!! Ye bested me and me crew. Surely yer name echoes through the ports now!"
+      end
+    else
+      if @player.all_ships_sunk? == true
+        puts "\nYou won!\n"
+      elsif @computer.all_ships_sunk? == true
+        puts "\nI won!\n"
+      end
     end
 
-    puts "\nReturning to main menu...\n\n"
+    pirate_play_agains = [
+      "\nHoist the sails — we be headin back to port...\n\n",
+      "\nThe sea grows quiet... back to the map table, we go.\n\n",
+      "\nA short rest 'fore we chart a new course. Back to the main menu!\n\n",
+      "\nThe cannon smoke clears... returnin to safe harbors.\n\n"
+    ]
+
+    if pirate_mode
+      puts pirate_play_agains.sample
+    else
+      puts "\nReturning to main menu...\n\n"
+    end
+        
     play_again?
   end
 
   def play_again?
-    puts "Would you like to play again? ('y' or 'n')"
+    if @pirate_mode
+      puts "Wanna tempt fate again, ye sea dog? ('y' for aye, 'n' for nay)"
+    else
+      puts "Would you like to play again? ('y' or 'n')"
+    end
+      
     user_input = gets.chomp.strip.downcase
   
     if user_input == 'y'
       game = Game.new
       game.start_game
     else
-      puts "Thanks for playing! Goodbye!"
+      pirate_rematch = [
+        "Ye fought bravely... or at least avoided sinkin yerself. Fare thee well!",
+        "Weigh anchor and vanish then, ye lily-livered swab!",
+        "I shall be waitin in the fog for our next skirmish. Until then, bilge rat.",
+        "So ye surrender? Smart choice. I be the terror of the tides!"
+      ]
+      if @pirate_mode
+        puts pirate_rematch.sample
+      else
+        puts "Thanks for playing! Goodbye!"
+      end
       quit_game
     end
   end
+
+  def pirate_mode
+    @pirate_mode == true
+  end
+
+  def pirate_ship_name(name)
+    if name == "Cruiser"
+       "Sea Serpent"
+    elsif name == "Submarine"
+       "Depth Crawler"
+    elsif name == "Black Pearl"
+       "The Black Pearl"
+    else name
+    end
+  end
   
+
 end
