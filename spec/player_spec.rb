@@ -117,7 +117,7 @@ RSpec.describe Player do
 
     describe '#place_ship_randomly' do
 
-        xit 'places a ship randomly for the computer in a valid location' do
+        it 'places a ship randomly for the computer in a valid location' do
             player = Player.new("computer")
             player.computer_player
             ship = Ship.new("Submarine", 2)
@@ -131,7 +131,7 @@ RSpec.describe Player do
             expect(player.board.cells.values.map(&:ship).compact).to include(ship)
         end
 
-        xit 'adds ships to the computer ship list' do
+        it 'adds ships to the computer ship list' do
             player = Player.new("player")
             ship = Ship.new("Cruiser", 3)
             # added a stub here to allow this test to function without actual user input

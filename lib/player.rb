@@ -17,7 +17,12 @@ class Player
     end
 
     def prompt_for_ship_placement(ship)
-        puts "Enter the coordinates for the #{ship.name} (#{ship.length} spaces):"
+        if @pirate_mode
+            puts "Mark the sea map for yer #{ship.name}! She needs #{ship.length} spaces to set sail:"
+        else
+            puts "Enter the coordinates for the #{ship.name} (#{ship.length} spaces):"
+        end
+
         gets.chomp.strip.upcase.split
     end  
         
@@ -36,7 +41,11 @@ class Player
                 @ships << ship
                 placed = true
               else
-                puts "Invalid placement: #{coordinates}. Please try again."
+                if @pirate_mode
+                    puts "Those coordinates be cursed! Try again, now."
+                else
+                    puts "Invalid placement: #{coordinates}. Please try again."
+                end
               end
             end
           end
@@ -45,7 +54,11 @@ class Player
       
       
     def prompt_for_coordinates(opponents_board)
-        puts "Enter a coordinate to fire on:"
+        if @pirate_mode
+            puts "Where shall we fire the cannons, Cap'n? Pick a coordinate!"
+        else
+            puts "Enter a coordinate to fire on:"
+        end
         
         loop do
             user_input = gets.chomp.strip.upcase
@@ -53,7 +66,11 @@ class Player
             if opponents_board.valid_coordinate?(user_input)
                 return user_input
             else
-                puts "Invalid coordinate. Please try again."
+                if @pirate_mode
+                    puts "Ye've wasted powder on waters already scorched! Pick a fresh spot, ya scallywag!"
+                else
+                    puts "Invalid coordinate. Please try again."
+                end
             end
         end
     end
@@ -66,11 +83,23 @@ class Player
           unless cell.fired_upon?
             cell.fire_upon
             if cell.ship && cell.ship.sunk?
-              puts "You sunk a ship at #{coordinate}!"
+                if @pirate_mode
+                    puts "Arrr! Another ship down, to Davy Jones' locker!"
+                else
+                    puts "You sunk a ship at #{coordinate}!"
+                end
             elsif cell.ship
-              puts "You hit a ship at #{coordinate}!"
+                if @pirate_mode
+                    puts "Aye! Direct hit at #{coordinate}, matey!"
+                else 
+                    puts "You hit a ship at #{coordinate}!"
+                end
             else
-              puts "You missed at #{coordinate}."
+                if @pirate_mode
+                    puts "Blast! Just sea foam at #{coordinate}."
+                else
+                    puts "You missed at #{coordinate}."
+                end
             end
             break
           end
@@ -113,13 +142,24 @@ class Player
       
           unless cell.fired_upon?
             cell.fire_upon
-            if cell.ship && cell.ship.sunk?
-              puts "The computer sunk one of your ships at #{coordinate}!"
-            elsif cell.ship
-              puts "The computer hit one of your ships at #{coordinate}!"
+            
+            if @pirate_mode
+                if cell.ship && cell.ship.sunk?
+                  puts "Yer ship be sunk by me cannon at #{coordinate}! HAR HAR!"
+                elsif cell.ship
+                  puts "I struck yer rig at #{coordinate}, ye landlubber!"
+                else
+                  puts "Blast! Arrr... just missed ye at #{coordinate}!"
+                end
             else
-              puts "The computer missed at #{coordinate}."
-            end
+                if cell.ship && cell.ship.sunk?
+                    puts "The computer sunk one of your ships at #{coordinate}!"
+                elsif cell.ship
+                    puts "The computer hit one of your ships at #{coordinate}!"
+                else
+                    puts "The computer missed at #{coordinate}."
+                end
+            end            
             break
           end
         end
