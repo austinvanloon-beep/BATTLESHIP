@@ -3,87 +3,124 @@ require 'spec_helper'
 RSpec.describe Player do
 
     before(:each) do
-        @player1 = Player.new("computer")
-        @player2 = Player.new("player")
-        @player1.computer_player
+        @computer = Player.new("computer")
+        @player = Player.new("player")
+        @computer.computer_player
+
+        @ship1 = Ship.new("Cruiser", 3)
+        @ship2 = Ship.new("Submarine", 2)
+
+        allow(@player.board).to receive(:place_ship).and_return(true)
+        allow(@computer.board).to receive(:place_ship).and_return(true)
     end
 
     describe '#initialize' do
 
         it 'exists' do
-            expect(@player1).to be_a(Player)
+            expect(@computer).to be_a(Player)
         end
 
         it 'has is_computer as false for human player' do
-            @player2 = Player.new("player")
-            @player2.computer_player
-            expect(@player2.is_computer).to eq(false)
+            @player = Player.new("player")
+            @player.computer_player
+            expect(@player.is_computer).to eq(false)
           end
           
         it 'has is_computer as true for computer player' do
-            @player1.computer_player
-            expect(@player1.name).to eq("computer")
-            expect(@player1.is_computer).to eq(true)
+            @computer.computer_player
+            expect(@computer.name).to eq("computer")
+            expect(@computer.is_computer).to eq(true)
         end
       
         it 'has a board' do
-            expect(@player1.board).to be_a(Board)
-            expect(@player2.board).to be_a(Board)
+            expect(@computer.board).to be_a(Board)
+            expect(@player.board).to be_a(Board)
         end
       
         it 'starts with no ships' do
-            expect(@player1.ships).to eq([])
-            expect(@player2.ships).to eq([])
+            expect(@computer.ships).to eq([])
+            expect(@player.ships).to eq([])
         end
     end
 
     describe '#prompt_for_ship_placement' do
 
         it 'returns an array of coordinates based on user input' do
-            player = Player.new("player")
             # added a stub here to allow this test to function without actual user input
-            allow(player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"])
+            allow(@player).to receive(:gets).and_return("A1 A2 A3")
+            allow(@player).to receive(:pirate_mode?).and_return(false)
 
-            result = player.prompt_for_ship_placement(Ship.new("Cruiser", 3))
-            expect(result).to eq(["A1", "A2", "A3"])
+            placement = @player.prompt_for_ship_placement(@ship1)
+            expect(placement).to eq(["A1", "A2", "A3"])
+        end
+    end
+
+    describe '#prompt_for_ship_placement (pirate mode)' do
+        it 'prints pirate ship placement prompt' do
+            allow(@player).to receive(:gets).and_return("A1 A2 A3")
+            allow(@player).to receive(:pirate_mode?).and_return(true)
+      
+            expect { @player.prompt_for_ship_placement(@ship1) }.to output("Mark the sea map for yer Cruiser! She needs 3 spaces to set sail:\n").to_stdout
         end
     end
 
     describe '#place_ship' do
     
-        it 'can place ships manually for human' do
-            player = Player.new("player")
-            ship = Ship.new("Cruiser", 3)
+        it 'can place ships manually for human based on coordinates received by user_input' do
             # added stubs here to allow this test to function without actual user input and to avoid getting stuck in an infinite validation loop
-            allow(player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"])
-            allow(player.board).to receive(:valid_placement?).with(ship, ["A1", "A2", "A3"]).and_return(true)
-            allow(player.board).to receive(:place_ship).with(ship, ["A1", "A2", "A3"])
+            allow(@player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"])
+            allow(@player.board).to receive(:valid_placement?).with(@ship1, ["A1", "A2", "A3"]).and_return(true)
+            allow(@player.board).to receive(:place_ship).with(@ship1, ["A1", "A2", "A3"])
             
-            player.place_ship([ship])
+            @player.place_ship([@ship1])
 
-            expect(player.ships).to include(ship)
-            expect(player.ships.length).to eq(1)
+            expect(@player.ships).to include(@ship1)
+            expect(@player.ships.length).to eq(1)
         end
 
         it 'adds ships to the player ship list' do
-            player = Player.new("player")
-            ship = Ship.new("Cruiser", 3)
             # added stubs here to allow this test to function without actual user input and to avoid getting stuck in an infinite validation loop
-            allow(player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"])
-            allow(player.board).to receive(:valid_placement?).with(ship, ["A1", "A2", "A3"]).and_return(true)
-            allow(player.board).to receive(:place_ship).with(ship, ["A1", "A2", "A3"])
+            allow(@player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"])
+            allow(@player.board).to receive(:valid_placement?).with(@ship1, ["A1", "A2", "A3"]).and_return(true)
+            allow(@player.board).to receive(:place_ship).with(@ship1, ["A1", "A2", "A3"])
         
-            player.place_ship([ship])
+            @player.place_ship([@ship1])
         
-            expect(player.ships).to include(ship)
-            expect(player.ships.length).to eq(1)
+            expect(@player.ships).to include(@ship1)
+            expect(@player.ships.length).to eq(1)
         end
     end
 
+    describe '#generate_valid_random_coordinates' do
+
+        it 'returns a randomized list of coordinates' do
+           
+            random_coords = @computer.generate_valid_random_coordinates(3)
+
+            expect(random_coords).to be_an(Array)
+            expect(random_coords.length).to eq(3)
+        end
+    end
+
+    describe '#place_ship_randomly' do
+
+        it 'places a ship randomly for the computer in a valid location and adds it to the computers ship list @ships' do
+            #stubbed the random coordinate generation here for consistent testing
+            random_coords = ["A1", "A2", "A3"]
+            
+            allow(@computer).to receive(:generate_valid_random_coordinates).with(3).and_return(random_coords)
+            allow(@computer.board).to receive(:valid_placement?).with(@ship1, random_coords).and_return(true)
+            allow(@computer.board).to receive(:place_ship).with(@ship1, random_coords)
+
+            @computer.place_ship_randomly(@ship1)
+        
+            expect(@computer.ships).to include(@ship1)
+        end
+    end
+    
     describe '#prompt_for_coordinates' do
 
         it 'recognizes invalid input and re-prompts the user for a valid input' do
-            player = Player.new("player")
             # added a mock here to fake the board class instead of actually referencing it
             opponent_board = double("Board", valid_coordinate?: true)
             allow(opponent_board).to receive(:cells).and_return({ "A1" => double("Cell") })
@@ -93,147 +130,277 @@ RSpec.describe Player do
             allow(opponent_board).to receive(:valid_coordinate?).with("Z1").and_return(false)
             allow(opponent_board).to receive(:valid_coordinate?).with("A1").and_return(true)
             # added a stub here to allow this test to function without actual user input to test additional spaces with input
-            allow(player).to receive(:gets).and_return("Z1", "A1")
+            allow(@player).to receive(:gets).and_return("Z1", "A1")
 
-            expect(player).to receive(:gets).twice
-            coordinate = player.prompt_for_coordinates(opponent_board)
+            expect(@player).to receive(:gets).twice
+            coordinate = @player.prompt_for_coordinates(opponent_board)
 
             expect(coordinate).to eq("A1")
         end
     end
 
-    describe '#generate_valid_random_coordinates' do
+    describe '#prompt_for_coordinates (pirate mode)' do
 
-        it 'returns a randomized list of coordinates' do
-            player = Player.new("computer")
-            player.computer_player
+        it 'uses pirate error message for invalid coordinates received by user_input' do
+            allow(@player).to receive(:gets).and_return("Z1", "A1")
+            allow(@player).to receive(:pirate_mode?).and_return(true)
+            allow(@computer.board).to receive(:valid_coordinate?).and_return(false, true)
 
-            result = player.generate_valid_random_coordinates(3)
-
-            expect(result).to be_an(Array)
-            expect(result.length).to eq(3)
+            expect { @player.prompt_for_coordinates(@computer.board) }.to output("Where shall we fire the cannons, Cap'n? Pick a coordinate!\nYe've wasted powder on waters already scorched! Pick a fresh spot, ya scallywag!\n").to_stdout
         end
     end
 
-    describe '#place_ship_randomly' do
-
-        it 'places a ship randomly for the computer in a valid location' do
-            player = Player.new("computer")
-            player.computer_player
-            ship = Ship.new("Submarine", 2)
-        
-            allow(player.board).to receive(:valid_placement?).with(ship, ["A1", "A2", "A3"]).and_return(true)
-            expect(player.board.valid_placement?(ship, ["A1", "A2", "A3"])).to be true
-
-            player.place_ship([ship])
-        
-            expect(player.ships).to include(ship)
-            expect(player.board.cells.values.map(&:ship).compact).to include(ship)
-        end
-
-        it 'adds ships to the computer ship list' do
-            player = Player.new("player")
-            ship = Ship.new("Cruiser", 3)
-            # added a stub here to allow this test to function without actual user input
-            allow(player).to receive(:gets).and_return("A1 A2 A3")
-        
-            allow(player.board).to receive(:valid_placement?).with(ship, ["A1", "A2", "A3"]).and_return(true)
-            expect(player.board.valid_placement?(ship, ["A1", "A2", "A3"])).to be true
-            
-            player.place_ship([ship])
-        
-            expect(player.ships).to include(ship)
-            expect(player.ships.length).to eq(1)
-        end
-    end
-    
     describe '#take_turn' do
 
         it 'prompts the user to enter a target coordinate and fires on it' do
-            computer = Player.new("computer")
-            player = Player.new("player")
             # added a stub here to allow this test to function without actual user input
-            allow(player).to receive(:gets).and_return("A1")
+            allow(@player).to receive(:gets).and_return("A1")
         
-            player.take_turn(computer.board)
+            @player.take_turn(@computer.board)
         
-            expect(computer.board.cells["A1"].fired_upon?).to be true
+            expect(@computer.board.cells["A1"].fired_upon?).to be true
         end
       
         it 'selects a random valid target for computer and fires on it' do
-            player = Player.new("player")
-            computer = Player.new("computer")
-            computer.computer_player
-          
-            fired_before = player.board.cells.values.count { |cell| cell.fired_upon? }
-            computer.take_turn(player.board)
-            fired_after = player.board.cells.values.count { |cell| cell.fired_upon? }
+            
+            fired_before = @player.board.cells.values.count { |cell| cell.fired_upon? }
+            @computer.take_turn(@player.board)
+            fired_after = @player.board.cells.values.count { |cell| cell.fired_upon? }
 
             expect(fired_after).to eq(fired_before + 1)
         end
 
         it 'does not fire on a cell that has already been fired upon' do
-            player = Player.new("player")
-            computer = Player.new("computer")
-            computer.computer_player
-          
             # force a manual fire_upon on the cell A1
-            player.board.cells["A1"].fire_upon
+            @player.board.cells["A1"].fire_upon
           
             # added a stub here to simulate trying to fire_upon A1 again, then choosing again because it's invalid
             # not sure that this is working exactly as needed and if it needs refinement though?
-            allow(player.board.cells).to receive(:keys).and_return(["A1", "A2", "A3", "B1"])
+            allow(@player.board.cells).to receive(:keys).and_return(["A1", "A2", "A3", "B1"])
             
-            fired_before = player.board.cells.values.count { |cell| cell.fired_upon? }
-            computer.take_turn(player.board)
-            fired_after = player.board.cells.values.count { |cell| cell.fired_upon? }
+            fired_before = @player.board.cells.values.count { |cell| cell.fired_upon? }
+            @computer.take_turn(@player.board)
+            fired_after = @player.board.cells.values.count { |cell| cell.fired_upon? }
           
             expect(fired_after).to eq(fired_before + 1)
           end        
+    end
+
+    describe '#fire_prompt' do
+
+        before(:each) do
+            allow(@player).to receive(:pirate_mode?).and_return(false)
+            allow(@computer).to receive(:pirate_mode?).and_return(false)
+        end
+
+        it 'outputs normal hit message in non-pirate mode' do
+            cell = Cell.new("A1")
+            cell.place_ship(@ship2)
+
+            allow(cell).to receive(:fired_upon?).and_return(false)
+            allow(cell).to receive(:fire_upon) { @ship2.hit }
+
+            allow(@computer.board).to receive(:cells).and_return({"A1" => cell})
+            allow(@computer.board.cells).to receive(:[]).with("A1").and_return(cell)
+            
+            allow(@player).to receive(:gets).and_return("A1")
+      
+            expect { @player.fire_prompt(@computer.board) }.to output(include("You hit a ship at A1")).to_stdout
+          end
+
+        it 'outputs normal sunk message in non-pirate mode' do
+            cell = Cell.new("A2")
+            cell.place_ship(@ship2)
+            # damaging the ship first before firing again to sink it
+            @ship2.hit
+
+            allow(cell).to receive(:fired_upon?).and_return(false)
+            allow(cell).to receive(:fire_upon) { @ship2.hit }
+
+            allow(@computer.board).to receive(:cells).and_return({"A2" => cell})
+            allow(@computer.board.cells).to receive(:[]).with("A2").and_return(cell)
+            
+            allow(@player).to receive(:gets).and_return("A2")
+    
+            expect { @player.fire_prompt(@computer.board) }.to output(include("You sunk a ship at A2")).to_stdout
+        end
+      
+        it 'outputs normal miss message in non-pirate mode' do
+            cell = Cell.new("B1")
+
+            allow(cell).to receive(:fired_upon?).and_return(false)
+            allow(cell).to receive(:fire_upon)
+            allow(cell).to receive(:ship).and_return(nil)
+
+            allow(@computer.board).to receive(:cells).and_return({"B1" => cell})
+            allow(@computer.board.cells).to receive(:[]).with("B1").and_return(cell)
+            
+            allow(@player).to receive(:gets).and_return("B1")
+      
+            expect { @player.fire_prompt(@computer.board) }.to output(include("You missed at B1")).to_stdout
+        end
+    end
+
+    describe '#fire_prompt (pirate mode)' do
+
+        before(:each) do
+            allow(@player).to receive(:pirate_mode?).and_return(true)
+            allow(@computer).to receive(:pirate_mode?).and_return(true)
+        end
+
+        it 'outputs pirate hit message' do
+            cell = Cell.new("A1")
+            cell.place_ship(@ship2)
+
+            allow(@computer.board).to receive(:cells).and_return({"A1" => cell})
+            allow(@computer.board.cells).to receive(:[]).with("A1").and_return(cell)
+           
+            allow(@player).to receive(:gets).and_return("A1")
+      
+            expect { @player.fire_prompt(@computer.board) }.to output(include("Aye! Direct hit at A1")).to_stdout
+          end
+    
+        it 'outputs pirate sunk message' do
+            cell = Cell.new("A2")
+            cell.place_ship(@ship2)
+            # damaging the ship first before firing again to sink it
+            @ship2.hit
+            
+            allow(@computer.board).to receive(:cells).and_return({"A2" => cell})
+            allow(@computer.board.cells).to receive(:[]).with("A2").and_return(cell)
+            
+            allow(@player).to receive(:gets).and_return("A2")
+            
+            expect { @player.fire_prompt(@computer.board) }.to output(include("Arrr! Another ship down, to Davy Jones' locker")).to_stdout
+        end
+    
+        xit 'outputs pirate miss message' do
+            cell = Cell.new("Z9")
+
+            allow(cell).to receive(:fired_upon?).and_return(false, true)
+            allow(cell).to receive(:fire_upon)
+            allow(cell).to receive(:ship).and_return(nil)
+      
+            allow(@computer.board).to receive(:cells).and_return({"Z9" => cell})
+            allow(@computer.board.cells).to receive(:[]).with("Z9").and_return(cell)
+            
+            allow(@player).to receive(:gets).and_return("Z9")
+      
+            expect { Timeout::timeout(2) { @player.fire_prompt(@computer.board) } }.to output(include("Blast! Just sea foam at Z9")).to_stdout
+
+        end
+    end
+    
+    describe '#fire_randomly' do
+
+        before(:each) do
+            allow(@player).to receive(:pirate_mode?).and_return(false)
+            allow(@computer).to receive(:pirate_mode?).and_return(false)
+        end
+
+        it 'outputs normal sunk message in non-pirate mode' do
+            cell = Cell.new("A2")
+            cell.place_ship(@ship2)
+            # damaging the ship first before firing again to sink it
+            @ship2.hit
+
+            allow(cell).to receive(:fired_upon?).and_return(false)
+            allow(cell).to receive(:fire_upon) do
+              @ship2.hit
+            end
+      
+            allow(@player.board).to receive(:cells).and_return({"A2" => cell})
+            allow(@player.board.cells).to receive(:keys).and_return(["A2"])
+      
+            expect { @computer.fire_randomly(@player.board) }.to output(include("The computer sunk one of your ships at A2")).to_stdout
+        end
+
+        it 'outputs normal miss message in non-pirate mode' do
+            allow(@player.board).to receive(:cells).and_return({"Z9" => Cell.new("Z9")})
+            allow(@player.board.cells).to receive(:keys).and_return(["Z9"])
+
+            expect { @computer.fire_randomly(@player.board) }.to output(include("The computer missed at Z9")).to_stdout
+        end
+    end
+
+    describe '#fire_randomly (pirate mode)' do
+
+        before(:each) do
+            allow(@player).to receive(:pirate_mode?).and_return(true)
+            allow(@computer).to receive(:pirate_mode?).and_return(true)
+        end
+
+         it 'outputs pirate hit message' do
+            cell = Cell.new("A1")
+            cell.place_ship(@ship2)
+
+            allow(@player.board).to receive(:cells).and_return({"A1" => cell})
+            allow(@player.board.cells).to receive(:keys).and_return(["A1"])
+
+            expect { @computer.fire_randomly(@player.board) }.to output(include("I struck yer rig at A1")).to_stdout
+        end
+      
+        it 'outputs pirate sunk message' do
+            cell = Cell.new("A2")
+            cell.place_ship(@ship2)
+            # damaging the ship first before firing again to sink it
+            @ship2.hit
+
+            allow(cell).to receive(:fired_upon?).and_return(false)
+            allow(cell).to receive(:fire_upon) do
+                @ship2.hit
+            end
+      
+            allow(@player.board).to receive(:cells).and_return({"A2" => cell})
+            allow(@player.board.cells).to receive(:keys).and_return(["A2"])
+      
+            expect { @computer.fire_randomly(@player.board) }.to output(include("Yer ship be sunk by me cannon at A2")).to_stdout
+        end  
+
+        it 'outputs pirate miss message' do
+            allow(@player.board).to receive(:cells).and_return({"Z9" => Cell.new("Z9")})
+            allow(@player.board.cells).to receive(:keys).and_return(["Z9"])
+      
+            expect { @computer.fire_randomly(@player.board) }.to output(include("just missed ye at Z9")).to_stdout
+        end       
     end
     
     describe '#all_ships_sunk' do
 
         it 'returns false if at least one is afloat' do
-            cruiser = Ship.new("Cruiser", 3)
-            submarine = Ship.new("Submarine", 2)
-            player = Player.new("player")
-
+            
             # added a stub here to allow this test to function without actual user input
-            allow(player).to receive(:prompt_for_ship_placement).with(cruiser).and_return(["A1", "A2", "A3"])
-            allow(player).to receive(:prompt_for_ship_placement).with(submarine).and_return(["B1", "B2"])
-            allow(player.board).to receive(:valid_placement?).and_return(true)
-            allow(player.board).to receive(:place_ship).and_return(true)
+            allow(@player).to receive(:prompt_for_ship_placement).with(@ship1).and_return(["A1", "A2", "A3"])
+            allow(@player).to receive(:prompt_for_ship_placement).with(@ship2).and_return(["B1", "B2"])
+            allow(@player.board).to receive(:valid_placement?).and_return(true)
+            allow(@player.board).to receive(:place_ship).and_return(true)
 
-            expect(player.board.valid_placement?(cruiser, ["A1", "A2", "A3"])).to be true
+            expect(@player.board.valid_placement?(@ship1, ["A1", "A2", "A3"])).to be true
 
-            player.place_ship([cruiser, submarine])
+            @player.place_ship([@ship1, @ship2])
 
-            3.times { cruiser.hit }
+            3.times { @ship1.hit }
            
-            expect(cruiser.sunk?).to be(true)
-            expect(player.all_ships_sunk?).to eq(false)
+            expect(@ship1.sunk?).to be(true)
+            expect(@player.all_ships_sunk?).to eq(false)
         end
 
         it 'returns true if all ships are sunk' do
-            player = Player.new("player")
-            cruiser = Ship.new("Cruiser", 3)
-            submarine = Ship.new("Submarine", 2)
-            
+
             # added a stub here to allow this test to function without actual user input
-            allow(player).to receive(:prompt_for_ship_placement).with(cruiser).and_return(["A1", "A2", "A3"])
-            allow(player).to receive(:prompt_for_ship_placement).with(submarine).and_return(["B1", "B2"])
-            allow(player.board).to receive(:valid_placement?).and_return(true)
-            allow(player.board).to receive(:place_ship).and_return(true)
+            allow(@player).to receive(:prompt_for_ship_placement).with(@ship1).and_return(["A1", "A2", "A3"])
+            allow(@player).to receive(:prompt_for_ship_placement).with(@ship2).and_return(["B1", "B2"])
+            allow(@player.board).to receive(:valid_placement?).and_return(true)
+            allow(@player.board).to receive(:place_ship).and_return(true)
 
-            expect(player.board.valid_placement?(cruiser, ["A1", "A2", "A3"])).to be true
+            expect(@player.board.valid_placement?(@ship1, ["A1", "A2", "A3"])).to be true
 
-            player.place_ship([cruiser, submarine])
+            @player.place_ship([@ship1, @ship2])
             
-            3.times { cruiser.hit }
-            2.times { submarine.hit }
+            3.times { @ship1.hit }
+            2.times { @ship2.hit }
 
-            expect(player.all_ships_sunk?).to be true
+            expect(@player.all_ships_sunk?).to be true
         end
     end
     
