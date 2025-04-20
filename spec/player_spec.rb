@@ -274,20 +274,19 @@ RSpec.describe Player do
             expect { @player.fire_prompt(@computer.board) }.to output(include("Arrr! Another ship down, to Davy Jones' locker")).to_stdout
         end
     
-        xit 'outputs pirate miss message' do
-            cell = Cell.new("Z9")
+        it 'outputs pirate miss message' do
+            cell = Cell.new("B1")
 
-            allow(cell).to receive(:fired_upon?).and_return(false, true)
+            allow(cell).to receive(:fired_upon?).and_return(false)
             allow(cell).to receive(:fire_upon)
             allow(cell).to receive(:ship).and_return(nil)
-      
-            allow(@computer.board).to receive(:cells).and_return({"Z9" => cell})
-            allow(@computer.board.cells).to receive(:[]).with("Z9").and_return(cell)
-            
-            allow(@player).to receive(:gets).and_return("Z9")
-      
-            expect { Timeout::timeout(2) { @player.fire_prompt(@computer.board) } }.to output(include("Blast! Just sea foam at Z9")).to_stdout
 
+            allow(@computer.board).to receive(:cells).and_return({"B1" => cell})
+            allow(@computer.board.cells).to receive(:[]).with("B1").and_return(cell)
+            
+            allow(@player).to receive(:gets).and_return("B1")
+      
+            expect { @player.fire_prompt(@computer.board) }.to output(include("Blast! Just sea foam at B1")).to_stdout
         end
     end
     
