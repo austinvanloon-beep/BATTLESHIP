@@ -21,6 +21,30 @@ RSpec.describe Game do
         end
     end
 
+    describe '#pirate_mode?' do
+        
+        it 'returns false by default' do
+            expect(@game.pirate_mode?).to eq(false)
+        end
+
+        it 'returns true after selecting Black Pearl' do
+          
+            allow(@game).to receive(:gets).and_return("1", "9")
+
+            allow(@game.player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"])
+            allow(@game.player.board).to receive(:valid_placement?).and_return(true)
+            allow(@game.player.board).to receive(:place_ship).and_return(true)
+            
+            allow(@game.computer).to receive(:generate_valid_random_coordinates).and_return(["A1", "A2", "A3", "A4"])
+            allow(@game.computer.board).to receive(:valid_placement?).and_return(true)
+            allow(@game.computer.board).to receive(:place_ship).and_return(true)
+
+            @game.setup_game
+            
+            expect(@game.pirate_mode?).to eq(true)
+        end
+    end
+
     describe '#welcome_message' do
 
         it 'returns pirate version of welcome message if pirate mode is enabled' do
@@ -119,9 +143,11 @@ RSpec.describe Game do
         it 'places Black Pearl for computer when selected' do
 
             allow(@game).to receive(:gets).and_return("1", "9")
+
             allow(@game.player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"])
             allow(@game.player.board).to receive(:valid_placement?).and_return(true)
             allow(@game.player.board).to receive(:place_ship).and_return(true)
+           
             allow(@game.computer).to receive(:generate_valid_random_coordinates).and_return(["A1", "A2", "A3", "A4"])
             allow(@game.computer.board).to receive(:valid_placement?).and_return(true)
             allow(@game.computer.board).to receive(:place_ship).and_return(true)
@@ -134,9 +160,11 @@ RSpec.describe Game do
         it 'shows pirate prompts for ship selection and placement' do
 
             allow(@game).to receive(:gets).and_return("1", "9")
+
             allow(@game.player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"])
             allow(@game.player.board).to receive(:valid_placement?).and_return(true)
             allow(@game.player.board).to receive(:place_ship).and_return(true)
+            
             allow(@game.computer).to receive(:generate_valid_random_coordinates).and_return(["A1", "A2", "A3", "A4"])
             allow(@game.computer.board).to receive(:valid_placement?).and_return(true)
             allow(@game.computer.board).to receive(:place_ship).and_return(true)
@@ -149,47 +177,25 @@ RSpec.describe Game do
 
     describe '#display_boards' do
 
-        it 'renders the boards for player and computer correctly' do
-          @cruiser = Ship.new("Cruiser", 3)
-          @submarine = Ship.new("Submarine", 2)
-          @ships = [@cruiser, @submarine]
+          it 'renders the boards for player and computer correctly' do
+              @cruiser = Ship.new("Cruiser", 3)
+              @submarine = Ship.new("Submarine", 2)
+              @ships = [@cruiser, @submarine]
 
-          @player1 = Player.new("computer")
-          @player2 = Player.new("player")
-          @player1.computer_player
+              @player1 = Player.new("computer")
+              @player2 = Player.new("player")
+              @player1.computer_player
 
-          expected_render = 
-            "=============COMPUTER BOARD=============\n" +
-            "#{@player1.board.render}" +
-            "==============PLAYER BOARD==============\n" +
-            "#{@player2.board.render(true)}"
+              expected_render = 
+                "=============COMPUTER BOARD=============\n" +
+                "#{@player1.board.render}" +
+                "==============PLAYER BOARD==============\n" +
+                "#{@player2.board.render(true)}"
 
-            expect{ @game.display_boards }.to output(expected_render).to_stdout
-        end
+                expect{ @game.display_boards }.to output(expected_render).to_stdout
+          end
     end  
     
-    describe '#pirate_mode?' do
-        
-        it 'returns false by default' do
-            expect(@game.pirate_mode?).to eq(false)
-        end
-
-        it 'returns true after selecting Black Pearl' do
-          
-            allow(@game).to receive(:gets).and_return("1", "9")
-            allow(@game.player).to receive(:prompt_for_ship_placement).and_return(["A1", "A2", "A3"])
-            allow(@game.player.board).to receive(:valid_placement?).and_return(true)
-            allow(@game.player.board).to receive(:place_ship).and_return(true)
-            allow(@game.computer).to receive(:generate_valid_random_coordinates).and_return(["A1", "A2", "A3", "A4"])
-            allow(@game.computer.board).to receive(:valid_placement?).and_return(true)
-            allow(@game.computer.board).to receive(:place_ship).and_return(true)
-
-            @game.setup_game
-            
-            expect(@game.pirate_mode?).to eq(true)
-        end
-    end
-
     describe '#end_game' do
 
         before(:each) do
@@ -204,9 +210,9 @@ RSpec.describe Game do
             allow(@game.player).to receive(:gets).and_return("A1 A2 A3", "B1 B2")
 
             allow(@game.computer).to receive(:place_ship_randomly) do |ship|
-              coords = @game.computer.generate_valid_random_coordinates(ship.length)
-              @game.computer.board.place_ship(ship, coords)
-              @game.computer.ships << ship
+                coords = @game.computer.generate_valid_random_coordinates(ship.length)
+                @game.computer.board.place_ship(ship, coords)
+                @game.computer.ships << ship
             end
 
             @game.player.place_ship(@ships)
@@ -218,34 +224,34 @@ RSpec.describe Game do
         end
  
         it 'prints the player win message when the computer ships are all sunk' do
-          @game.player.ships.each do |ship| 
-            ship.length.times do 
-                ship.hit
+            @game.player.ships.each do |ship| 
+                ship.length.times do 
+                    ship.hit
+                end
             end
-          end
 
-          expect(@game.computer.all_ships_sunk?).to be true
-          expect{ @game.end_game }.to output("\nYou won!\n").to_stdout
+            expect(@game.computer.all_ships_sunk?).to be true
+            expect{ @game.end_game }.to output("\nYou won!\n").to_stdout
         end
 
         it 'prints the computer win message when the player ships are all sunk' do
-          @game.player.ships.each do |ship| 
-              ship.length.times do 
-                  ship.hit
-              end
-          end
+            @game.player.ships.each do |ship| 
+                ship.length.times do 
+                    ship.hit
+                end
+            end
       
           expect(@game.player.all_ships_sunk?).to be true
           expect{ @game.end_game }.to output("\nI won!\n").to_stdout
         end
       
         it 'returns to main menu after game ends' do
-          # nifty refactor to have the ships iterate upon themselves to hit the number of times their health (length) is!
-          @game.player.ships.each do |ship| 
-            ship.length.times do 
-                ship.hit
+            # nifty refactor to have the ships iterate upon themselves to hit the number of times their health (length) is!
+            @game.player.ships.each do |ship| 
+              ship.length.times do 
+                  ship.hit
+              end
             end
-          end
           
           expect{ @game.end_game }.to output("\nReturning to main menu...\n\n").stdout
         end
