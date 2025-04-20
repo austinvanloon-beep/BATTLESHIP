@@ -1,4 +1,4 @@
-require 'spec_helper'
+require_relative 'spec_helper'
 
 RSpec.describe Player do
 
@@ -118,6 +118,20 @@ RSpec.describe Player do
         end
     end
     
+    describe '#setup_game with Black Pearl' do
+
+        it 'places the Black Pearl manually at A1 through A4' do
+            game = Game.new
+            allow(game).to receive(:pirate_mode?).and_return(true)
+            black_pearl = Ship.new("Black Pearl", 4)
+
+            game.place_black_pearl(black_pearl)
+
+            expect(game.computer.board.cells["A1"].ship).to eq(black_pearl)
+            expect(game.computer.board.cells["A4"].ship).to eq(black_pearl)
+        end
+    end
+
     describe '#prompt_for_coordinates' do
 
         it 'recognizes invalid input and re-prompts the user for a valid input' do

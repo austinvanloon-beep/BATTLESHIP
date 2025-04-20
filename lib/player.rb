@@ -43,7 +43,7 @@ class Player
                     
               if @board.valid_placement?(ship, coordinates)
                 @board.place_ship(ship, coordinates)
-                @ships << ship
+                @player.ships << ship
                 placed = true
               else
                 if pirate_mode?
@@ -126,11 +126,19 @@ class Player
         attempts = 0
         max_attempts = 100
       
+        if pirate_mode? && ship.name == "Black Pearl"
+            fixed_coords = ["A1", "A2", "A3", "A4"]
+            @computer.board.place_ship(ship, fixed_coords)
+            @computer.ships << ship
+        else
+            @computer.place_ship([ship])
+        end
+          
         until attempts >= max_attempts
           coordinates = generate_valid_random_coordinates(ship.length)
           if board.valid_placement?(ship, coordinates)
             board.place_ship(ship, coordinates)
-            @ships << ship
+            @computer.ships << ship
             return
           end
           attempts += 1

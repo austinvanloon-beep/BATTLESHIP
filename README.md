@@ -11,4 +11,4 @@
     - Driver and Navigator, coaching feedback and async code reviews.
 
 4. Describe how feedback was shared over the course of this project.
-    - Via DTR, group check-ins with Megan, multiple live sessions to review code together, and via Slack.
+    - Via (DTR)[https://docs.google.com/document/d/1Y2E8uR-0PIXO_hKe1Tcdy3N7kTWDMo9l0OFeCnRUmys/edit?tab=t.0], group check-ins with Megan, multiple live sessions to review code together, and via Slack.
