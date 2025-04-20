@@ -1,12 +1,17 @@
 class Player
     
     attr_reader :name, :board, :ships, :is_computer
+    attr_accessor :pirate_mode
     
     def initialize(name)
         @name = name
         @board = Board.new
         @ships = []
         @is_computer = false
+    end
+
+    def pirate_mode?
+        @pirate_mode == true
     end
 
     def computer_player
@@ -51,7 +56,6 @@ class Player
           end
         end
     end
-      
       
     def prompt_for_coordinates(opponents_board)
         if pirate_mode?
