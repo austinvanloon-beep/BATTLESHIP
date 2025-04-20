@@ -4,7 +4,7 @@ require './lib/board'
 require './lib/game'
 require './lib/player'
 
-if __FILE__ == $PROGRAM_NAME
-  game = Game.new
-  game.start_game
+if $PROGRAM_NAME == __FILE__
+    game = Game.new
+    game.start_game
 end
