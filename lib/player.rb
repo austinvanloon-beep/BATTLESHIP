@@ -1,12 +1,17 @@
 class Player
     
     attr_reader :name, :board, :ships, :is_computer
+    attr_accessor :pirate_mode
     
     def initialize(name)
         @name = name
         @board = Board.new
         @ships = []
         @is_computer = false
+    end
+
+    def pirate_mode?
+        @pirate_mode == true
     end
 
     def computer_player
@@ -17,7 +22,7 @@ class Player
     end
 
     def prompt_for_ship_placement(ship)
-        if @pirate_mode
+        if pirate_mode?
             puts "Mark the sea map for yer #{ship.name}! She needs #{ship.length} spaces to set sail:"
         else
             puts "Enter the coordinates for the #{ship.name} (#{ship.length} spaces):"
@@ -41,7 +46,7 @@ class Player
                 @ships << ship
                 placed = true
               else
-                if @pirate_mode
+                if pirate_mode?
                     puts "Those coordinates be cursed! Try again, now."
                 else
                     puts "Invalid placement: #{coordinates}. Please try again."
@@ -52,9 +57,8 @@ class Player
         end
     end
       
-      
     def prompt_for_coordinates(opponents_board)
-        if @pirate_mode
+        if pirate_mode?
             puts "Where shall we fire the cannons, Cap'n? Pick a coordinate!"
         else
             puts "Enter a coordinate to fire on:"
@@ -66,7 +70,7 @@ class Player
             if opponents_board.valid_coordinate?(user_input)
                 return user_input
             else
-                if @pirate_mode
+                if pirate_mode?
                     puts "Ye've wasted powder on waters already scorched! Pick a fresh spot, ya scallywag!"
                 else
                     puts "Invalid coordinate. Please try again."
@@ -83,19 +87,19 @@ class Player
           unless cell.fired_upon?
             cell.fire_upon
             if cell.ship && cell.ship.sunk?
-                if @pirate_mode
+                if pirate_mode?
                     puts "Arrr! Another ship down, to Davy Jones' locker!"
                 else
                     puts "You sunk a ship at #{coordinate}!"
                 end
             elsif cell.ship
-                if @pirate_mode
+                if pirate_mode?
                     puts "Aye! Direct hit at #{coordinate}, matey!"
                 else 
                     puts "You hit a ship at #{coordinate}!"
                 end
             else
-                if @pirate_mode
+                if pirate_mode?
                     puts "Blast! Just sea foam at #{coordinate}."
                 else
                     puts "You missed at #{coordinate}."
@@ -143,7 +147,7 @@ class Player
           unless cell.fired_upon?
             cell.fire_upon
             
-            if @pirate_mode
+            if pirate_mode?
                 if cell.ship && cell.ship.sunk?
                   puts "Yer ship be sunk by me cannon at #{coordinate}! HAR HAR!"
                 elsif cell.ship
