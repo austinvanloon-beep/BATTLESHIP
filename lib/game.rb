@@ -117,11 +117,11 @@ class Game
       user_input = gets.chomp.strip
       ship_info = ship_options[user_input]
 
-      if user_input.downcase == "9"
+      if user_input == "9"
         @pirate_mode = true
         black_pearl_chosen = true
         puts "Avast! Ye've summoned the Black Pearl. Prepare for a cursed voyage! Ahahahaaaa"
-        
+        chosen_ships << Ship.new("Black Pearl", 4)
         next
       end
 

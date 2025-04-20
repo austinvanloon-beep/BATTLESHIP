@@ -1,4 +1,4 @@
-require 'spec_helper'
+require_relative 'spec_helper'
 
 RSpec.describe Board do
     describe '#can keep track of cells and validate coordinates' do
